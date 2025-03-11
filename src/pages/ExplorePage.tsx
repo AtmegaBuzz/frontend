@@ -1,5 +1,15 @@
 import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
+import { Sparkles, TrendingUp, Tv, Flame, Zap, Gamepad2 } from 'lucide-react'
+// Import character images
+import char1 from '@/assets/char1.jpeg'
+import char2 from '@/assets/char2.jpeg'
+import char3 from '@/assets/char3.jpeg'
+import char4 from '@/assets/char4.jpeg'
+import f1 from '@/assets/1f.png'
+import f2 from '@/assets/2f.png'
+import f3 from '@/assets/3f.png'
+import f4 from '@/assets/f4.png'
 
 interface StreamInfo {
   id: string
@@ -18,79 +28,78 @@ const ExplorePage = () => {
   const [filter, setFilter] = useState('all')
 
   useEffect(() => {
-    // In a real implementation, you would fetch actual stream data
     const mockStreams = [
       {
         id: 'pepe-coin',
-        tokenName: 'PEPE',
-        characterName: 'Pepe the Frog',
-        thumbnail: '/images/single-bot@2x.png',
-        viewerCount: 256,
+        tokenName: '$PEPE COIN',
+        characterName: 'Pepe The Based Frog',
+        thumbnail: char1,
+        viewerCount: 1256,
         isLive: true,
         category: 'meme',
         trending: true
       },
       {
         id: 'doge-coin',
-        tokenName: 'DOGE',
-        characterName: 'Doge',
-        thumbnail: '/images/single-bot@2x.png',
-        viewerCount: 189,
+        tokenName: '$PIXEL WAR', // Changed from '$DOGE KING'
+        characterName: 'Pixel Warrior', // Changed from 'Much Wow Doge'
+        thumbnail: char2,
+        viewerCount: 989,
         isLive: true,
         category: 'meme',
         trending: true
       },
       {
         id: 'shiba-inu',
-        tokenName: 'SHIB',
-        characterName: 'Shiba Inu',
-        thumbnail: '/images/single-bot@2x.png',
-        viewerCount: 145,
+        tokenName: '$SHIB ARMY',
+        characterName: 'Shiba Commander',
+        thumbnail: f1,
+        viewerCount: 845,
         isLive: true,
         category: 'meme'
       },
       {
         id: 'wojak-coin',
-        tokenName: 'WOJAK',
-        characterName: 'Wojak',
-        thumbnail: '/images/single-bot@2x.png',
-        viewerCount: 112,
+        tokenName: '$WOJAK',
+        characterName: 'Feel Guy Alpha',
+        thumbnail: f2,
+        viewerCount: 712,
         isLive: false,
         category: 'meme'
       },
       {
         id: 'memecoin-1',
-        tokenName: 'MEME1',
-        characterName: 'Meme Character 1',
-        thumbnail: '/images/single-bot@2x.png',
-        viewerCount: 98,
+        tokenName: '$MOON SHOT',
+        characterName: 'Moon Boy',
+        thumbnail: char3,
+        viewerCount: 598,
         isLive: true,
         category: 'defi'
       },
       {
         id: 'memecoin-2',
-        tokenName: 'MEME2',
-        characterName: 'Meme Character 2',
-        thumbnail: '/images/single-bot@2x.png',
-        viewerCount: 87,
+        tokenName: '$CHAD INU',
+        characterName: 'Gigachad',
+        thumbnail: f3,
+        viewerCount: 487,
         isLive: true,
         category: 'defi'
       },
       {
         id: 'memecoin-3',
-        tokenName: 'MEME3',
-        characterName: 'Meme Character 3',
-        thumbnail: '/images/single-bot@2x.png',
-        viewerCount: 76,
+        tokenName: '$DOGE KING', // Changed from '$PIXEL WAR'
+        characterName: 'Much Wow Doge', // Changed from 'Pixel Warrior'
+        thumbnail: char4,
+        viewerCount: 376,
         isLive: false,
         category: 'gaming'
       },
       {
         id: 'memecoin-4',
-        tokenName: 'MEME4',
-        characterName: 'Meme Character 4',
-        thumbnail: '/images/single-bot@2x.png',
-        viewerCount: 65,
+        tokenName: '$GAME KING',
+        characterName: 'Gaming Legend',
+        thumbnail: f4,
+        viewerCount: 665,
         isLive: true,
         category: 'gaming',
         trending: true
@@ -109,86 +118,110 @@ const ExplorePage = () => {
         ? streams.filter(stream => stream.trending)
         : streams.filter(stream => stream.category === filter)
 
+  const getFilterIcon = (filterName: string) => {
+    switch(filterName) {
+      case 'all': return <Sparkles size={18} />;
+      case 'live': return <Tv size={18} />;
+      case 'trending': return <TrendingUp size={18} />;
+      case 'meme': return <Flame size={18} />;
+      case 'defi': return <Zap size={18} />;
+      case 'gaming': return <Gamepad2 size={18} />;
+      default: return <Sparkles size={18} />;
+    }
+  }
+
   return (
-    <section className="pt-24 pb-20">
-      <div className="container max-w-[1200px] mx-auto px-4">
-        <h1 className="text-center mb-10">Explore Live Memecoins</h1>
+    <section className="pt-24 pb-20 min-h-screen relative bg-gradient-to-b from-purple-light/10 to-blue-dark/30 overflow-hidden">
+      {/* Background Elements */}
+      <div className="absolute inset-0 z-0 overflow-hidden">
+        <img src="/images/pattern-bg.png" className="absolute inset-0 w-full h-full object-cover opacity-20" />
+      </div>
+
+      <div className="container mx-auto px-4 relative z-10">
+        {/* Main heading */}
+        <div className="bg-[#FCFCE6] border-4 border-black rounded-xl p-4 mb-8 shadow-[-4px_4px_0_0_#1f2024] relative">
+          <h1 className="text-3xl md:text-4xl font-bold text-center font-right-grotesk">
+            Explore Live Memecoins
+          </h1>
+        </div>
         
-        <div className="flex justify-center gap-2 flex-wrap mb-8">
-          <button 
-            onClick={() => setFilter('all')} 
-            className={`px-4 py-2 rounded-full border-none cursor-pointer font-${filter === 'all' ? 'bold' : 'normal'} ${filter === 'all' ? 'bg-primary text-white' : 'bg-gray-100 text-black'}`}
-          >
-            All
-          </button>
-          <button 
-            onClick={() => setFilter('live')} 
-            className={`px-4 py-2 rounded-full border-none cursor-pointer font-${filter === 'live' ? 'bold' : 'normal'} ${filter === 'live' ? 'bg-primary text-white' : 'bg-gray-100 text-black'}`}
-          >
-            Live Now
-          </button>
-          <button 
-            onClick={() => setFilter('trending')} 
-            className={`px-4 py-2 rounded-full border-none cursor-pointer font-${filter === 'trending' ? 'bold' : 'normal'} ${filter === 'trending' ? 'bg-primary text-white' : 'bg-gray-100 text-black'}`}
-          >
-            Trending
-          </button>
-          <button 
-            onClick={() => setFilter('meme')} 
-            className={`px-4 py-2 rounded-full border-none cursor-pointer font-${filter === 'meme' ? 'bold' : 'normal'} ${filter === 'meme' ? 'bg-primary text-white' : 'bg-gray-100 text-black'}`}
-          >
-            Meme
-          </button>
-          <button 
-            onClick={() => setFilter('defi')} 
-            className={`px-4 py-2 rounded-full border-none cursor-pointer font-${filter === 'defi' ? 'bold' : 'normal'} ${filter === 'defi' ? 'bg-primary text-white' : 'bg-gray-100 text-black'}`}
-          >
-            DeFi
-          </button>
-          <button 
-            onClick={() => setFilter('gaming')} 
-            className={`px-4 py-2 rounded-full border-none cursor-pointer font-${filter === 'gaming' ? 'bold' : 'normal'} ${filter === 'gaming' ? 'bg-primary text-white' : 'bg-gray-100 text-black'}`}
-          >
-            Gaming
-          </button>
+        {/* Filter buttons */}
+        <div className="flex justify-center flex-wrap gap-3 mb-8 relative">
+          {[
+            { name: 'all', label: 'All' },
+            { name: 'live', label: 'Live Now' },
+            { name: 'trending', label: 'Trending' },
+            { name: 'meme', label: 'Meme' },
+            { name: 'defi', label: 'DeFi' },
+            { name: 'gaming', label: 'Gaming' }
+          ].map(filterOption => (
+            <button 
+              key={filterOption.name}
+              onClick={() => setFilter(filterOption.name)} 
+              className={`
+                flex items-center gap-2 px-4 py-2 rounded-lg border-2 
+                transition-all duration-200 font-bold text-sm
+                ${filter === filterOption.name 
+                  ? 'bg-primary text-white border-black' 
+                  : 'bg-white/90 text-black border-gray-300 hover:border-black'
+                }
+              `}
+            >
+              {getFilterIcon(filterOption.name)}
+              {filterOption.label}
+            </button>
+          ))}
         </div>
         
         {isLoading ? (
-          <div className="text-center">
-            <p>Loading streams...</p>
+          <div className="text-center p-12 bg-white/80 backdrop-blur-sm rounded-xl border-4 border-black">
+            <div className="animate-pulse">
+              <p className="text-2xl font-bold">Loading awesome streams...</p>
+              <p>Get ready for some meme magic!</p>
+            </div>
           </div>
         ) : filteredStreams.length === 0 ? (
-          <div className="text-center">
-            <p>No streams found matching your filter.</p>
+          <div className="text-center p-12 bg-white/80 backdrop-blur-sm rounded-xl border-4 border-black">
+            <p className="text-2xl font-bold mb-2">No streams found matching your filter.</p>
+            <p>Try another category or check back later!</p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
             {filteredStreams.map((stream) => (
-              <Link to={`/stream/${stream.id}`} key={stream.id} className="no-underline">
-                <div className="rounded-xl overflow-hidden transition-all duration-300 cursor-pointer hover:shadow-lg border-4 border-black">
+              <Link to={`/stream/${stream.id}`} key={stream.id} className="no-underline block group">
+                <div className="bg-white rounded-xl border-6 border-black overflow-hidden transition-all duration-300 
+                  shadow-[-6px_6px_0_0_#000] hover:shadow-[-10px_10px_0_0_#000] 
+                  hover:-translate-y-2 hover:-translate-x-2 group-hover:bg-[#FCFCE6]">
                   <div className="relative">
                     <img 
                       src={stream.thumbnail} 
                       alt={stream.tokenName} 
-                      className="w-full h-[180px] object-cover rounded-t-lg" 
+                      className="w-full h-56 object-cover transform group-hover:scale-105 transition-transform duration-500" 
                     />
                     {stream.isLive && (
-                      <div className="absolute top-2.5 right-2.5 bg-red-500 text-white px-2 py-1 rounded text-xs font-bold">
+                      <div className="absolute top-3 left-3 bg-red-500 px-2 py-1 rounded-md text-white text-xs font-bold border-2 border-black shadow-lg flex items-center gap-1">
+                        <span className="w-1.5 h-1.5 bg-white rounded-full animate-pulse"></span>
                         LIVE
                       </div>
                     )}
                     {stream.trending && (
-                      <div className="absolute top-2.5 left-2.5 bg-primary text-white px-2 py-1 rounded text-xs font-bold">
+                      <div className="absolute top-3 left-3 ml-16 bg-primary px-2 py-1 rounded-md text-white text-xs font-bold border-2 border-black shadow-sm flex items-center gap-1">
+                        <TrendingUp size={12} />
                         TRENDING
                       </div>
                     )}
-                    <div className="absolute bottom-2.5 right-2.5 bg-black/70 text-white px-2 py-1 rounded text-xs">
-                      {stream.viewerCount} viewers
+                    <div className="absolute top-3 right-3 bg-black px-2 py-1 rounded-md text-white text-xs font-bold border-2 border-white backdrop-blur-sm">
+                      {stream.viewerCount.toLocaleString()} viewers
                     </div>
                   </div>
-                  <div className="p-4">
-                    <h3 className="mb-1 text-lg">{stream.tokenName}</h3>
-                    <p className="m-0 text-gray-600">{stream.characterName}</p>
+                  <div className="p-4 border-t-4 border-black bg-[#FCFCE6] group-hover:bg-white transition-colors duration-300">
+                    <h3 className="text-xl font-bold mb-1 font-right-grotesk group-hover:text-primary transition-colors duration-200">
+                      {stream.tokenName}
+                    </h3>
+                    <p className="text-gray-600 flex items-center gap-2 font-medium">
+                      <span className={`w-2 h-2 rounded-full ${stream.isLive ? 'bg-red-500' : 'bg-gray-300'}`}></span>
+                      {stream.characterName}
+                    </p>
                   </div>
                 </div>
               </Link>
