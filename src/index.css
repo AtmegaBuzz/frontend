@@ -1,0 +1,119 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@font-face {
+  font-family: 'Right Grotesk';
+  src: url('./assets/fonts/PPRightGrotesk-SpatialBlack.woff2') format('woff2'),
+       url('./assets/fonts/PPRightGrotesk-SpatialBlack.eot') format('embedded-opentype'),
+       url('./assets/fonts/PPRightGrotesk-SpatialBlack.woff') format('woff'),
+       url('./assets/fonts/PPRightGrotesk-SpatialBlack.ttf') format('truetype'),
+       url('./assets/fonts/PPRightGrotesk-SpatialBlack.otf') format('opentype');
+  font-weight: 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+@layer base {
+  body {
+    @apply font-space-mono text-black text-base leading-normal m-0;
+  }
+  
+  h1 {
+    @apply mt-5 mb-2.5 font-right-grotesk text-[38px] leading-tight font-bold;
+  }
+  
+  h2 {
+    @apply mt-0 mb-2 font-right-grotesk text-3xl leading-tight font-bold tracking-wide uppercase;
+  }
+  
+  h3 {
+    @apply mt-5 mb-2.5 font-right-grotesk text-[1.7em] leading-[30px] font-bold;
+  }
+  
+  a {
+    @apply text-black font-bold no-underline;
+  }
+  
+  li {
+    @apply pb-2;
+  }
+}
+
+@layer components {
+  /* Hero headings are now defined directly in the component for better responsiveness */
+  
+  .primary-button {
+    @apply px-10 py-4 border-solid border-4 border-black rounded-lg bg-primary shadow-[-3px_3px_0_0_#1f2024] transition-all duration-200 font-right-grotesk text-white text-xl text-center tracking-wider cursor-pointer inline-block;
+  }
+  
+  .primary-button:hover {
+    @apply bg-[#e42c7f] shadow-[-6px_6px_0_0_#1f2024] translate-x-1 -translate-y-1;
+  }
+  
+  .primary-button.hero {
+    @apply z-[1000] mt-4 mb-6 px-10 py-5 self-center border-8 rounded-xl bg-lightBlue shadow-[-6px_6px_0_0_#1f2024] transition-all text-black text-2xl;
+  }
+  
+  .primary-button.hero:hover {
+    @apply relative z-[4] bg-[#ff00a1] shadow-[-11px_11px_0_0_#1f2024] text-white;
+  }
+  
+  .primary-button.hero:active {
+    @apply shadow-[-6px_6px_0_0_#1f2024] translate-x-0 translate-y-0;
+  }
+  
+  .primary-button.footer {
+    @apply px-8 py-5 self-center border-4 border-[#461a97] bg-[#672fcf] shadow-[-6px_6px_0_0_#461a97] text-2xl my-5;
+  }
+  
+  .primary-button.footer:hover {
+    @apply bg-[#ff0d11];
+  }
+  
+  .hero-image {
+    @apply absolute left-[-20px] bottom-[-20px] z-[1] w-[14vw] max-w-[300px] min-w-[160px] rotate-[-23deg];
+  }
+  
+  .hero-image.bl1 {
+    @apply left-[10vw] bottom-[21%] rotate-[20deg];
+  }
+  
+  .hero-image.cl2 {
+    @apply left-[18%] top-[23%] bottom-auto w-[16vw] rotate-[-18deg];
+  }
+  
+  .hero-image.cl1 {
+    @apply left-[-1%] top-[20%] bottom-auto z-0 rotate-[20deg];
+  }
+  
+  .hero-image.tl {
+    @apply left-[12%] top-[-3%] bottom-auto z-0 w-[12vw] rotate-[8deg];
+  }
+  
+  .hero-image.bc {
+    @apply left-auto rotate-[-11deg];
+  }
+  
+  .hero-image.br {
+    @apply left-auto right-0 rotate-[14deg];
+  }
+  
+  .hero-image.br1 {
+    @apply left-auto right-[10vw] bottom-[25%] scale-[0.8] rotate-[-14deg];
+  }
+  
+  .hero-image.cr2 {
+    @apply left-auto top-[23%] right-[24%] bottom-auto z-[2] rotate-[10deg];
+  }
+  
+  .hero-image.tr {
+    @apply left-auto top-[-2%] right-[12%] bottom-auto z-0 w-[12vw] rotate-[8deg];
+  }
+  
+  .hero-image.cr1 {
+    @apply left-auto top-[18%] right-[-1%] bottom-auto z-[6] rotate-[20deg];
+  }
+}
+
+/* Add any remaining specialized CSS that might be difficult to convert directly */
