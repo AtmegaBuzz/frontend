@@ -72,15 +72,15 @@
   }
   
   .hero-image {
-    @apply absolute left-[-20px] bottom-[-20px] z-[1] w-[14vw] max-w-[300px] min-w-[160px] rotate-[-23deg];
+    @apply absolute left-[160px] bottom-[-20px] z-[1] w-[14vw] max-w-[300px] min-w-[160px] rotate-[-23deg];
   }
   
   .hero-image.bl1 {
-    @apply left-[10vw] bottom-[21%] rotate-[20deg];
+    @apply left-[1vw] bottom-[25%] rotate-[20deg];
   }
   
   .hero-image.cl2 {
-    @apply left-[18%] top-[23%] bottom-auto w-[16vw] rotate-[-18deg];
+    @apply left-[14%] top-[33%] bottom-auto w-[16vw] rotate-[-18deg];
   }
   
   .hero-image.cl1 {
@@ -88,11 +88,11 @@
   }
   
   .hero-image.tl {
-    @apply left-[12%] top-[-3%] bottom-auto z-0 w-[12vw] rotate-[8deg];
+    @apply left-[2%] top-[-8%] bottom-auto z-0 w-[12vw] rotate-[8deg];
   }
   
   .hero-image.bc {
-    @apply left-auto rotate-[-11deg];
+    @apply left-auto rotate-[-1deg] w-[10vw] max-w-[200px] min-w-[120px]; /* Added width controls */
   }
   
   .hero-image.br {
@@ -100,7 +100,7 @@
   }
   
   .hero-image.br1 {
-    @apply left-auto right-[10vw] bottom-[25%] scale-[0.8] rotate-[-14deg];
+    @apply left-auto right-[12vw] bottom-[25%] scale-[0.8] rotate-[-14deg];
   }
   
   .hero-image.cr2 {
@@ -108,11 +108,11 @@
   }
   
   .hero-image.tr {
-    @apply left-auto top-[-2%] right-[12%] bottom-auto z-0 w-[12vw] rotate-[8deg];
+    @apply left-auto top-[-9%] right-[12%] bottom-auto z-0 w-[12vw] rotate-[8deg];
   }
   
   .hero-image.cr1 {
-    @apply left-auto top-[18%] right-[-1%] bottom-auto z-[6] rotate-[20deg];
+    @apply left-auto top-[28%] right-[-1%] bottom-auto z-[6] rotate-[20deg];
   }
 }
 
