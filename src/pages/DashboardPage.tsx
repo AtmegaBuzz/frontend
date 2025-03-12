@@ -5,6 +5,18 @@ interface DashboardPageProps {
   isWalletConnected: boolean
   connectWallet: () => Promise<void>
   walletAddress: string | null
+  tokenData: {
+    name: string
+    symbol: string
+    contractAddress: string
+    chain: string
+    description: string
+    website: string
+    twitter: string
+    telegram: string
+    discord: string
+    email: string
+  } | null
 }
 
 interface TokenData {
@@ -21,62 +33,50 @@ interface TokenData {
   messages: number
 }
 
-const DashboardPage = ({ isWalletConnected, connectWallet, walletAddress }: DashboardPageProps) => {
+const DashboardPage = ({ 
+  isWalletConnected, 
+  connectWallet, 
+  walletAddress,
+  tokenData 
+}: DashboardPageProps) => {
   const [tokens, setTokens] = useState<TokenData[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [activeTab, setActiveTab] = useState('overview')
 
   useEffect(() => {
-    if (isWalletConnected) {
-      // In a real app, you would fetch user's tokens from API/backend
-      const fetchUserTokens = async () => {
-        setIsLoading(true)
-        
-        // Mock data
-        const mockTokens = [
-          {
-            id: 'pepe-coin',
-            name: 'Pepe Coin',
-            symbol: 'PEPE',
-            address: '0x1234...5678',
-            character: 'Pepe the Frog',
-            thumbnail: '/images/single-bot@2x.png',
-            viewers: 128,
-            isLive: true,
-            engagement: 76,
-            followers: 1246,
-            messages: 543
-          }
-        ]
-        
-        setTimeout(() => {
-          setTokens(mockTokens)
-          setIsLoading(false)
-        }, 1000)
-      }
-      
-      fetchUserTokens()
-    }
-  }, [isWalletConnected])
+    // We'll load tokens regardless of wallet connection status
+    // In a real app, this would depend on the user's session/auth status
+    const fetchTokens = async () => {
+      setIsLoading(true)
 
-  if (!isWalletConnected) {
-    return (
-      <section className="bg-yellow bg-pattern pt-24 pb-20">
-        <div className="container max-w-[800px] mx-auto px-4">
-          <div className="border-8 border-black rounded-3xl bg-white shadow-[-3px_3px_0_0_#1f2024] p-10 text-center">
-            <h1 className="mb-8">Dashboard</h1>
-            <p>Please connect your wallet to view your dashboard.</p>
-            <button onClick={connectWallet} className="primary-button mt-5">
-              Connect Wallet
-            </button>
-          </div>
-        </div>
-      </section>
-    )
-  }
+      // Mock data - we'll always show at least one token for demonstration
+      const mockTokens = [
+        {
+          id: 'pepe-coin',
+          name: 'Pepe Coin',
+          symbol: 'PEPE',
+          address: '0x1234...5678',
+          character: 'Pepe the Frog',
+          thumbnail: '/images/single-bot@2x.png',
+          viewers: 128,
+          isLive: true,
+          engagement: 76,
+          followers: 1246,
+          messages: 543
+        }
+      ]
+      
+      setTimeout(() => {
+        setTokens(mockTokens)
+        setIsLoading(false)
+      }, 1000)
+    }
+    
+    fetchTokens()
+  }, [])
 
   return (
-    <section className="bg-yellow bg-pattern pt-24 pb-20">
+    <section className="bg-heroRed-light pt-24 pb-20">
       <div className="container max-w-[1200px] mx-auto px-4">
         <h1 className="text-center mb-10">Project Dashboard</h1>
         
@@ -164,7 +164,7 @@ const DashboardPage = ({ isWalletConnected, connectWallet, walletAddress }: Dash
                           <Link to={`/stream/${token.id}`} className="flex-1 text-center py-2 bg-primary text-white rounded-lg no-underline font-bold">
                             View Stream
                           </Link>
-                          <Link to={`/dashboard/edit/${token.id}`} className="flex-1 text-center py-2 bg-gray-100 text-gray-800 rounded-lg no-underline font-bold">
+                          <Link to={`/create-character`} className="flex-1 text-center py-2 bg-gray-100 text-gray-800 rounded-lg no-underline font-bold">
                             Edit Character
                           </Link>
                         </div>
@@ -230,14 +230,26 @@ const DashboardPage = ({ isWalletConnected, connectWallet, walletAddress }: Dash
                 
                 <div className="mb-5">
                   <label className="block mb-2 font-bold">
-                    Connected Wallet
+                    Wallet Status
                   </label>
-                  <input
-                    type="text"
-                    value={walletAddress || ''}
-                    readOnly
-                    className="w-full p-3 rounded-lg border-2 border-gray-300 text-base bg-gray-50"
-                  />
+                  {isWalletConnected ? (
+                    <input
+                      type="text"
+                      value={walletAddress || ''}
+                      readOnly
+                      className="w-full p-3 rounded-lg border-2 border-gray-300 text-base bg-gray-50"
+                    />
+                  ) : (
+                    <div className="flex items-center">
+                      <span className="text-red-500 mr-3">Not connected</span>
+                      <button 
+                        onClick={connectWallet}
+                        className="primary-button py-2"
+                      >
+                        Connect Wallet
+                      </button>
+                    </div>
+                  )}
                 </div>
                 
                 <div className="mb-5">

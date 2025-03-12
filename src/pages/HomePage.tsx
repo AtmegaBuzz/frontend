@@ -2,19 +2,15 @@ import { useNavigate } from 'react-router-dom'
 import { FeaturedStreams, HowItWorks, Benefits, TokenStats, Footer } from '../components'
 
 interface HomePageProps {
-  isWalletConnected: boolean
   connectWallet: () => Promise<void>
 }
 
-const HomePage = ({ isWalletConnected, connectWallet }: HomePageProps) => {
+const HomePage = ({ connectWallet }: HomePageProps) => {
   const navigate = useNavigate()
 
   const handleListToken = () => {
-    if (!isWalletConnected) {
-      connectWallet()
-    } else {
-      navigate('/list-token')
-    }
+    // Direct navigation to the list token page without wallet check
+    navigate('/list-token')
   }
 
   const handleExplore = () => {
@@ -53,10 +49,8 @@ const HomePage = ({ isWalletConnected, connectWallet }: HomePageProps) => {
           
           {/* Animated background elements */}
           <img src="/images/hero-image11.svg" loading="lazy" width="132" alt="" className="hero-image cr1" />
-          {/*   <img src="/images/hero-image01.svg" loading="lazy" width="132" alt="" className="hero-image cl1" />*/}
           <img src="/images/hero-image10.svg" loading="eager" width="132" alt="" className="hero-image tr" />
           <img src="/images/hero-image04.svg" loading="eager" width="132" alt="" className="hero-image tl" />
-        {/*  <img src="/images/hero-image07.svg" loading="lazy" width="132" alt="" className="hero-image cr2" /> */}
           <img src="/images/hero-image05.svg" loading="lazy" width="132" alt="" className="hero-image cl2" />
           <img src="/images/hero-image03.svg" loading="lazy" width="132" alt="" className="hero-image bl1" />
           <img src="/images/hero-image08.svg" loading="lazy" width="132" alt="" className="hero-image br1" />

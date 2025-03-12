@@ -10,9 +10,33 @@ import {
   LiveStreamPage
 } from './pages'
 
+// Add type declaration for ethereum provider
+declare global {
+  interface Window {
+    ethereum?: {
+      request: (args: { method: string }) => Promise<string[]>
+    }
+  }
+}
+
+// Define token data interface
+interface TokenData {
+  name: string
+  symbol: string
+  contractAddress: string
+  chain: string
+  description: string
+  website: string
+  twitter: string
+  telegram: string
+  discord: string
+  email: string
+}
+
 const App = () => {
   const [isWalletConnected, setIsWalletConnected] = useState(false)
   const [walletAddress, setWalletAddress] = useState<string | null>(null)
+  const [tokenData, setTokenData] = useState<TokenData | null>(null)
 
   const connectWallet = async () => {
     try {
@@ -30,12 +54,16 @@ const App = () => {
       console.error('Error connecting wallet:', error)
     }
   }
+  
+  const updateTokenData = (data: TokenData) => {
+    setTokenData(data)
+  }
 
   return (
     <Router>
       <Navbar isWalletConnected={isWalletConnected} connectWallet={connectWallet} walletAddress={walletAddress} />
       <Routes>
-        <Route path="/" element={<HomePage isWalletConnected={isWalletConnected} connectWallet={connectWallet} />} />
+        <Route path="/" element={<HomePage connectWallet={connectWallet} />} />
         <Route path="/explore" element={<ExplorePage />} />
         <Route 
           path="/list-token" 
@@ -44,6 +72,8 @@ const App = () => {
               isWalletConnected={isWalletConnected} 
               connectWallet={connectWallet}
               walletAddress={walletAddress}
+              updateTokenData={updateTokenData}
+              tokenData={tokenData}
             />
           } 
         />
@@ -51,8 +81,8 @@ const App = () => {
           path="/create-character" 
           element={
             <CharacterCreationPage 
-              isWalletConnected={isWalletConnected} 
               connectWallet={connectWallet}
+              initialTokenData={tokenData}
             />
           } 
         />
@@ -63,6 +93,7 @@ const App = () => {
               isWalletConnected={isWalletConnected} 
               connectWallet={connectWallet}
               walletAddress={walletAddress}
+              tokenData={tokenData}
             />
           } 
         />

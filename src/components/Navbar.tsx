@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 
 interface NavbarProps {
   isWalletConnected: boolean
@@ -9,6 +9,7 @@ interface NavbarProps {
 
 const Navbar = ({ isWalletConnected, connectWallet, walletAddress }: NavbarProps) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
+  const navigate = useNavigate()
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen)
@@ -16,6 +17,10 @@ const Navbar = ({ isWalletConnected, connectWallet, walletAddress }: NavbarProps
 
   const truncateAddress = (address: string) => {
     return `${address.slice(0, 6)}...${address.slice(-4)}`
+  }
+
+  const handleListTokenClick = () => {
+    navigate('/list-token')
   }
 
   return (
@@ -34,12 +39,14 @@ const Navbar = ({ isWalletConnected, connectWallet, walletAddress }: NavbarProps
         </Link>
         <nav className={`flex items-center pr-3 rounded-r-lg bg-black text-white h-14 ${isMenuOpen ? 'flex-col absolute top-16 right-2 left-2 z-50 p-4 rounded-lg' : ''}`}>
           <Link to="/explore" className="px-4 py-2 text-white text-base hover:text-yellow">Explore</Link>
-          <Link to="/list-token" className="px-4 py-2 text-white text-base hover:text-yellow">List Token</Link>
+          <button 
+            onClick={handleListTokenClick} 
+            className="px-4 py-2 text-white text-base hover:text-yellow bg-transparent border-none cursor-pointer"
+          >
+            List Token
+          </button>
           {isWalletConnected && (
-            <>
-              <Link to="/dashboard" className="px-4 py-2 text-white text-base hover:text-yellow">Dashboard</Link>
-              <Link to="/create-character" className="px-4 py-2 text-white text-base hover:text-yellow">Create Character</Link>
-            </>
+            <Link to="/dashboard" className="px-4 py-2 text-white text-base hover:text-yellow">Dashboard</Link>
           )}
           <button 
             onClick={connectWallet} 
