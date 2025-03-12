@@ -4,14 +4,13 @@ import {
   HowItWorks,
   Benefits,
   TokenStats,
-  Footer,
 } from "../components";
 
 interface HomePageProps {
   connectWallet: () => Promise<void>;
 }
 
-const HomePage = ({ connectWallet }: HomePageProps) => {
+const HomePage = ({}: HomePageProps) => {
   const navigate = useNavigate();
 
   const handleListToken = () => {

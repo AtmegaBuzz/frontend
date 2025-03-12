@@ -123,10 +123,6 @@
   @apply left-[-1%]  bottom-auto z-0 rotate-[20deg];
 }
 
-.hero-image.cr22 {
-  @apply right-auto top-[23%]  top-[118rem] z-[2] rotate-[10deg];
-}
-
 .hero-image.br12 {
   @apply left-auto right-[0vw]  scale-[0.8] rotate-[120deg];
 }

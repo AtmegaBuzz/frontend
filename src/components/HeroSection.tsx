@@ -1,5 +1,3 @@
-import React from "react";
-
 interface HeroSectionProps {
   handleMint: () => Promise<void>;
   availableRobotos: number;

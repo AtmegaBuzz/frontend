@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 
 interface CharacterCreationPageProps {
@@ -28,7 +28,6 @@ type PersonalityType =
   | "custom";
 
 const CharacterCreationPage = ({
-  connectWallet,
   initialTokenData,
 }: CharacterCreationPageProps) => {
   const navigate = useNavigate();
@@ -46,7 +45,7 @@ const CharacterCreationPage = ({
   );
 
   // Character name is automatically derived from token name
-  const [characterName, setCharacterName] = useState(
+  const [characterName] = useState(
     tokenData.name ? `${tokenData.name} Character` : ""
   );
   const [voiceType, setVoiceType] = useState<VoiceType>("male");
