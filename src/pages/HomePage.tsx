@@ -72,12 +72,12 @@ const HomePage = ({}: HomePageProps) => {
                 alt=""
                 className="absolute left-[5%] top-[15%] w-[15vw] max-w-[70px] rotate-[8deg] z-0"
               />
-              <img
+          {/*}    <img
                 src="/images/hero-image02.svg"
                 loading="eager"
                 alt=""
                 className="absolute left-[50%] top-[12%] w-[15vw] max-w-[70px] -translate-x-1/2 rotate-[-5deg] z-0"
-              />
+              /> */}
               <img
                 src="/images/hero-image10.svg"
                 loading="eager"
@@ -102,12 +102,12 @@ const HomePage = ({}: HomePageProps) => {
               {/* Bottom row */}
              
               
-              <img
+            {/*  <img
                 src="/images/hero-image09.svg"
                 loading="lazy"
                 alt=""
                 className="absolute right-[12%] bottom-[15%] w-[15vw] max-w-[70px] rotate-[8deg] z-0"
-              />
+              />*/}
 
               {/* Feature images with larger size */}
              
@@ -227,8 +227,6 @@ const HomePage = ({}: HomePageProps) => {
             </button>
           </div>
 
-          {/* Remove the mobile-only stats counter section from here */}
-
           {/* Desktop background images */}
           <div className="hidden md:block">
             <img
@@ -300,50 +298,50 @@ const HomePage = ({}: HomePageProps) => {
           <div className="block md:hidden absolute inset-0 overflow-hidden">
             {/* Top row */}
            
-            <img
+           {/*  <img
               src="/images/hero-image02.svg"
               loading="eager"
               alt=""
               className="absolute left-[50%] top-[12%] w-[15vw] max-w-[70px] -translate-x-1/2 rotate-[-5deg] z-0"
-            />
-            <img
+            />*/}
+           {/*  <img
               src="/images/hero-image10.svg"
               loading="eager"
               alt=""
               className="absolute right-[5%] top-[15%] w-[15vw] max-w-[70px] rotate-[-8deg] z-0"
-            />
+            />*/}
+                    
 
-            {/* Middle row */}
-           
-          
-
-            {/* Bottom row */}
+            {/* Bottom row black guy */}
             <img
               src="/images/hero-image03.svg"
               loading="lazy"
               alt=""
-              className="absolute left-[12%] bottom-[15%] w-[15vw] max-w-[70px] rotate-[-8deg] z-0"
+              className="absolute left-[%] bottom-[15%] w-[15vw] max-w-[70px] rotate-[-8deg] z-0"
             />
-            <img
+           {/* <img
               src="/images/hero-image06.svg"
               loading="lazy"
               alt=""
               className="absolute left-[50%] bottom-[10%] w-[15vw] max-w-[70px] -translate-x-1/2 rotate-[5deg] z-0"
-            />
+            />*/}
+                        {/* Bottom row freen guy */}
             <img
               src="/images/hero-image09.svg"
               loading="lazy"
               alt=""
-              className="absolute right-[12%] bottom-[15%] w-[15vw] max-w-[70px] rotate-[8deg] z-0"
+              className="absolute right-[1%] bottom-[15%] w-[15vw] max-w-[70px] rotate-[8deg] z-0"
             />
 
             {/* Feature images with larger size */}
-            <img
+            {/* purple robot on top with chapri hair*/}
+            <img 
               src="/images/hero-image11.svg"
               loading="lazy"
               alt=""
               className="absolute left-[25%] top-[1%] w-[18vw] max-w-[85px] rotate-[15deg] z-[1]"
             />
+            {/* robot on top with white helmet*/}
             <img
               src="/images/hero-image02.svg"
               loading="eager"
