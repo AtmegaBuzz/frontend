@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { Heart, MessageSquare } from 'lucide-react'
+import ScrollVelocity from './ScrollVelocity'
 import f1Image from '@/assets/1f.png'
 import f2Image from '@/assets/2f.png'
 import f3Image from '@/assets/3f.png'
@@ -82,15 +83,16 @@ const FeaturedStreams = () => {
   const gridStreams = streams.slice(1)
 
   return (
-    <section className="bg-yellow bg-pattern py-10 px-4">
+    <section className="bg-yellow bg-pattern py-10">
       <div className="container mx-auto px-4 py-8 md:px-6 lg:px-8">
-        {/* Header */}
-        <div className="bg-[#FCFCE6] border-4 border-black rounded-xl p-6 mb-8">
-          <h1 className="text-4xl font-bold text-center md:text-2xl">
-            Top MemeTuber Streams
-          </h1>
+        {/* Centered Header */}
+        <div className="bg-[#FCFCE6] border-4 border-black rounded-xl p-6 mb-8 text-center">
+          <h2 className="text-black font-right-grotesk text-3xl font-bold">
+            Featured AI Characters
+          </h2>
         </div>
         
+        {/* Streams Content */}
         {isLoading ? (
           <div className="text-center">
             <p>Loading streams...</p>
@@ -190,6 +192,22 @@ const FeaturedStreams = () => {
             </div>
           </div>
         )}
+
+        {/* Scrolling Text Section */}
+        <div className="w-full overflow-hidden mt-16">
+          <ScrollVelocity
+            texts={[
+              'AI-POWERED ENTERTAINMENT • 24/7 COMMUNITY ENGAGEMENT • AUTOMATED SOCIAL PRESENCE • ',
+              'TRANSFORM YOUR TOKEN • LIVE INTERACTIVE STREAMS • DYNAMIC AI PERSONALITIES • '
+            ]}
+            velocity={40}
+            className="text-black font-right-grotesk text-2xl font-bold tracking-wider"
+            parallaxClassName="py-2"
+            scrollerClassName="gap-x-8"
+            numCopies={3}
+            velocityMapping={{ input: [0, 1000], output: [0, 2] }}
+          />
+        </div>
       </div>
     </section>
   )
