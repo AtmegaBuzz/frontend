@@ -27,31 +27,46 @@ const HowItWorks = () => {
   ];
 
   return (
-    <section className="bg-blue-dark py-24">
-      <div className="max-w-[1200px] mx-auto px-6">
+    <section className="bg-blue-dark py-12 md:py-24 relative overflow-hidden">
+      {/* Left side images - hidden on mobile */}
+      <div className="absolute left-0 top-1/2 -translate-y-1/2 w-[300px] hidden lg:block pointer-events-none">
         <img
-          src="/images/hero-image01.svg"
+          src="/images/hero-image04.svg"
           loading="lazy"
-          width="132"
           alt=""
-          className="hero-image cl12"
+          className="absolute left-[15%] top-[-100px] w-[160px] rotate-[10deg] mix-blend-soft-light opacity-70"
         />
+      </div>
 
-        <div className="bg-white rounded-2xl p-10">
-          <h2 className="text-center mb-10">How ShillTube Works</h2>
+      {/* Right side images - hidden on mobile */}
+      <div className="absolute right-0 top-1/2 -translate-y-1/2 w-[300px] hidden lg:block pointer-events-none">
+        <img
+          src="/images/hero-image02.svg"
+          loading="lazy"
+          alt=""
+          className="absolute right-[15%] top-[-80px] w-[150px] rotate-[-15deg] mix-blend-soft-light opacity-70"
+        />
+      </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div className="max-w-[1200px] mx-auto px-4 md:px-6 relative z-10">
+        <div className="bg-white/90 backdrop-blur-sm rounded-xl md:rounded-2xl p-6 md:p-10 shadow-[-4px_4px_0_0_#1f2024]">
+          <h2 className="text-center mb-8 md:mb-10 text-2xl md:text-3xl">How ShillTube Works</h2>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 md:gap-6">
             {steps.map((step, index) => (
-              <div key={index} className="text-center">
-                <div className="mx-auto mb-5 w-20 h-20 flex items-center justify-center">
+              <div 
+                key={index} 
+                className="text-center flex flex-col items-center bg-white/50 rounded-lg p-4 md:p-0 md:bg-transparent"
+              >
+                <div className="mx-auto mb-4 md:mb-5 w-16 h-16 md:w-20 md:h-20 flex items-center justify-center">
                   <img
                     src={step.icon}
                     alt={step.title}
-                    className="max-w-full max-h-full"
+                    className="max-w-full max-h-full transform transition-transform hover:scale-110"
                   />
                 </div>
-                <h3 className="mb-4">{step.title}</h3>
-                <p>{step.description}</p>
+                <h3 className="mb-2 md:mb-4 text-lg md:text-xl font-bold">{step.title}</h3>
+                <p className="text-sm md:text-base text-gray-700">{step.description}</p>
               </div>
             ))}
           </div>

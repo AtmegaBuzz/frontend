@@ -126,3 +126,200 @@
 .hero-image.br12 {
   @apply left-auto right-[0vw]  scale-[0.8] rotate-[120deg];
 }
+
+/* Additional mobile styles for a richer UI */
+
+/* Animation for stats counters */
+@keyframes countUp {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Apply to mobile stats elements */
+.mobile-stat {
+  animation: countUp 0.6s ease-out forwards;
+}
+
+.mobile-stat:nth-child(1) {
+  animation-delay: 0.2s;
+}
+
+.mobile-stat:nth-child(2) {
+  animation-delay: 0.4s;
+}
+
+.mobile-stat:nth-child(3) {
+  animation-delay: 0.6s;
+}
+
+/* Glass effect for mobile UI elements */
+.glass-effect {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Custom mobile responsive fixes */
+@media (max-width: 768px) {
+  #hero {
+    position: relative;
+    min-height: 100vh;
+    padding: 80px 0 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  /* Add subtle animation to robot images */
+  #hero img {
+    transition: transform 0.5s ease-out;
+  }
+  
+  #hero img:hover {
+    transform: scale(1.1) rotate(5deg);
+  }
+  
+  /* Custom scale factor for better mobile visibility */
+  .mobile-hero-button {
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  }
+  
+  .mobile-hero-button:active {
+    transform: scale(0.95);
+  }
+  
+  /* Improve vertical alignment of mobile title */
+  #hero .flex-col {
+    padding-top: 0;
+    padding-bottom: 0;
+  }
+
+  .primary-button.hero {
+    padding: 0.75rem 1.5rem;
+    border-width: 4px;
+    border-radius: 0.5rem;
+    font-size: 1.25rem;
+    box-shadow: -4px 4px 0 0 #1f2024;
+    min-width: 160px;
+  }
+  
+  .primary-button.hero:hover {
+    box-shadow: -6px 6px 0 0 #1f2024;
+  }
+  
+  /* Mobile-friendly button focus state */
+  .primary-button:focus {
+    outline: none;
+  }
+}
+
+/* Add these animations to your index.css for the mobile navbar */
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-slideDown {
+  animation: slideDown 0.3s ease-out forwards;
+}
+
+/* Custom mobile navbar styles */
+@media (max-width: 768px) {
+  /* Navbar container */
+  .fixed.left-0.top-0.right-0.z-50 {
+    transition: all 0.3s ease;
+  }
+
+  /* Improve touch targets */
+  .mobile-nav-link {
+    padding: 0.75rem 1rem;
+    margin-bottom: 0.25rem;
+    border-radius: 0.5rem;
+    transition: all 0.2s ease;
+  }
+  
+  .mobile-nav-link:active {
+    transform: scale(0.98);
+  }
+  
+  /* Mobile menu background overlay */
+  .mobile-menu-overlay {
+    backdrop-filter: blur(8px);
+    transition: all 0.3s ease;
+  }
+}
+
+.mobile-hero-button {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border: 3px solid #1f2024;
+  border-radius: 0.5rem;
+  font-size: 1.125rem;
+  font-weight: bold;
+  text-align: center;
+  position: relative;
+  z-index: 10;
+  box-shadow: -4px 4px 0 0 #1f2024;
+  font-family: "Right Grotesk", sans-serif;
+  transition: all 0.2s ease;
+  letter-spacing: 0.05em;
+  cursor: pointer;
+}
+
+.mobile-hero-button:hover {
+  transform: translate(1px, -1px);
+  box-shadow: -6px 6px 0 0 #1f2024;
+}
+
+.mobile-hero-button:active {
+  transform: translate(2px, 2px);
+  box-shadow: -2px 2px 0 0 #1f2024;
+}
+
+/* Ensure proper mobile spacing in hero section */
+@media (max-width: 768px) {
+  #hero {
+    min-height: 100vh;
+    padding: 80px 0 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  /* Improve vertical alignment of mobile title */
+  #hero .flex-col {
+    padding-top: 0;
+    padding-bottom: 0;
+  }
+}
+/* Mobile navbar enhancements */
+@media (max-width: 768px) {
+  .mobile-navbar-container {
+    background: linear-gradient(to bottom, rgba(0,0,0,0.9), rgba(0,0,0,0.7));
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+  }
+
+  /* Animation for decorative images */
+  @keyframes float {
+    0%, 100% { transform: translateY(0) rotate(var(--rotation)); }
+    50% { transform: translateY(-5px) rotate(var(--rotation)); }
+  }
+
+  .mobile-navbar-image {
+    animation: float 3s ease-in-out infinite;
+    --rotation: -8deg;
+  }
+
+  .mobile-navbar-image:nth-child(2) {
+    --rotation: 8deg;
+    animation-delay: -1.5s;
+  }
+}

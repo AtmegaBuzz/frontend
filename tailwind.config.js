@@ -5,6 +5,14 @@ export default {
       "./src/**/*.{js,ts,jsx,tsx}",
     ],
     theme: {
+      screens: {
+        'xs': '480px', // Add this for extra small screens
+        'sm': '640px',
+        'md': '768px',
+        'lg': '1024px',
+        'xl': '1280px',
+        '2xl': '1536px',
+      },
       extend: {
         colors: {
           primary: '#ff55a2',
@@ -53,3 +61,4 @@ export default {
     },
     plugins: [],
   }
+  
