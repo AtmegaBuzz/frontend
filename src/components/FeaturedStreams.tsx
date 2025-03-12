@@ -210,7 +210,7 @@ const FeaturedStreams = () => {
               "TRANSFORM YOUR TOKEN • LIVE INTERACTIVE STREAMS • DYNAMIC AI PERSONALITIES • ",
             ]}
             velocity={40}
-            className="text-black font-right-grotesk text-2xl font-bold tracking-wider"
+            className="text-black font-right-grotesk text-5xl font-bold tracking-wider"
             parallaxClassName="py-2"
             scrollerClassName="gap-x-8"
             numCopies={3}
