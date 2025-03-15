@@ -1,7 +1,6 @@
 import { useState, useEffect, useRef } from 'react'
 import { useParams } from 'react-router-dom'
 import { Heart, MessageSquare, Share2, Users } from 'lucide-react'
-import { h1 } from 'framer-motion/client'
 
 interface Message {
   id: string
