@@ -36,7 +36,6 @@ const LiveStreamPage = () => {
   const [isLoading, setIsLoading] = useState(true)
   const [showEvent, setShowEvent] = useState(false)
   const messagesEndRef = useRef<HTMLDivElement>(null)
-  const channelId = "UCetf834RebcJNy7nLmtQpnw";
   const [isLive, setIsLive] = useState(true);
 
 
