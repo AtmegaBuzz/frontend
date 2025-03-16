@@ -4,14 +4,14 @@ import SocialAgentCard from "../components/SocialAgentCard";
 interface TokenData {
   name: string;
   symbol: string;
-  contractAddress: string;
-  chain: string;
+  supply: string;
+  imageUrl: string;
   description: string;
+  youtube: string;
   website: string;
   twitter: string;
   telegram: string;
   discord: string;
-  email: string;
 }
 
 interface SocialAgentConfig {
@@ -93,7 +93,7 @@ const SocialLinksForm: React.FC<SocialLinksFormProps> = ({
 
       <div className="mb-5">
         <label htmlFor="telegram" className="block mb-2 font-bold">
-          Telegram
+          Telegram Username
         </label>
         <input
           type="text"
@@ -102,13 +102,13 @@ const SocialLinksForm: React.FC<SocialLinksFormProps> = ({
           value={tokenData.telegram}
           onChange={handleInputChange}
           className="w-full p-3 rounded-lg border-2 border-gray-300 text-base"
-          placeholder="t.me/your-group"
+          placeholder="@ZenithFrostyy"
         />
       </div>
 
       <div className="mb-5">
         <label htmlFor="discord" className="block mb-2 font-bold">
-          Discord
+          Discord Username
         </label>
         <input
           type="text"
@@ -122,17 +122,17 @@ const SocialLinksForm: React.FC<SocialLinksFormProps> = ({
       </div>
 
       <div className="mb-5">
-        <label htmlFor="email" className="block mb-2 font-bold">
-          Contact Email
+        <label htmlFor="youtube" className="block mb-2 font-bold">
+          Youtube Channel
         </label>
         <input
-          type="email"
-          id="email"
-          name="email"
-          value={tokenData.email}
+          type="text"
+          id="youutbe"
+          name="youtube"
+          value={tokenData.youtube}
           onChange={handleInputChange}
           className="w-full p-3 rounded-lg border-2 border-gray-300 text-base"
-          placeholder="your@email.com"
+          placeholder="your-channel"
         />
       </div>
 

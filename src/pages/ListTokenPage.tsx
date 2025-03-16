@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import TokenInfoForm from "../forms/TokenInfoForm";
 import SocialLinksForm from "../forms/SocialLinksForm";
 import AgentConfigurationPopup from "../components/AgentConfigurationPopup";
+import { image } from "framer-motion/client";
 interface ListTokenPageProps {
   isWalletConnected: boolean;
   connectWallet: () => Promise<void>;
@@ -10,14 +11,14 @@ interface ListTokenPageProps {
   tokenData: {
     name: string;
     symbol: string;
-    contractAddress: string;
-    chain: string;
+    supply: string;
+    imageUrl: string;
     description: string;
     website: string;
     twitter: string;
     telegram: string;
     discord: string;
-    email: string;
+    youtube: string;
   } | null;
   updateTokenData: (data: any) => void;
 }
@@ -42,14 +43,14 @@ const ListTokenPage = ({
   const [tokenData, setTokenData] = useState({
     name: existingTokenData?.name || "",
     symbol: existingTokenData?.symbol || "",
-    contractAddress: existingTokenData?.contractAddress || "",
-    chain: existingTokenData?.chain || "ethereum",
+    supply: existingTokenData?.supply || "",
+    imageUrl: existingTokenData?.imageUrl || "",
     description: existingTokenData?.description || "",
     website: existingTokenData?.website || "",
+    youtube: existingTokenData?.youtube || "",
     twitter: existingTokenData?.twitter || "",
     telegram: existingTokenData?.telegram || "",
     discord: existingTokenData?.discord || "",
-    email: existingTokenData?.email || "",
   });
   const [formStep, setFormStep] = useState(1);
   const [isSubmitting, setIsSubmitting] = useState(false);

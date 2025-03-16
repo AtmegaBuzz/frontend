@@ -23,14 +23,14 @@ declare global {
 interface TokenData {
   name: string;
   symbol: string;
-  contractAddress: string;
-  chain: string;
+  supply: string;
+  imageUrl: string;
   description: string;
   website: string;
   twitter: string;
   telegram: string;
   discord: string;
-  email: string;
+  youtube: string;
 }
 
 const App = () => {

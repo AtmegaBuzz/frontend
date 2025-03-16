@@ -8,14 +8,14 @@ interface DashboardPageProps {
   tokenData: {
     name: string;
     symbol: string;
-    contractAddress: string;
-    chain: string;
+    supply: string;
+    imageUrl: string;
     description: string;
+    youtube: string;
     website: string;
     twitter: string;
     telegram: string;
     discord: string;
-    email: string;
   } | null;
 }
 
@@ -23,6 +23,7 @@ interface TokenData {
   id: string;
   name: string;
   symbol: string;
+
   address: string;
   character: string;
   thumbnail: string;
