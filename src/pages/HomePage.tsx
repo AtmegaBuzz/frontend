@@ -6,11 +6,8 @@ import {
   TokenStats,
 } from "../components";
 
-interface HomePageProps {
-  connectWallet: () => Promise<void>;
-}
 
-const HomePage = ({}: HomePageProps) => {
+const HomePage = () => {
   const navigate = useNavigate();
 
   const handleListToken = () => {

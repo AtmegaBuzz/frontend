@@ -5,9 +5,6 @@ import SocialLinksForm from "../forms/SocialLinksForm";
 import AgentConfigurationPopup from "../components/AgentConfigurationPopup";
 import { image } from "framer-motion/client";
 interface ListTokenPageProps {
-  isWalletConnected: boolean;
-  connectWallet: () => Promise<void>;
-  walletAddress: string | null;
   tokenData: {
     name: string;
     symbol: string;
@@ -33,9 +30,6 @@ interface SocialAgentConfig {
 }
 
 const ListTokenPage = ({
-  // isWalletConnected,
-  // connectWallet,
-  // walletAddress,
   tokenData: existingTokenData,
   updateTokenData,
 }: ListTokenPageProps) => {

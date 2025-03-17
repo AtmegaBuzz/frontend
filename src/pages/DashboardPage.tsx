@@ -1,24 +1,8 @@
+import { WalletSelector } from "@aptos-labs/wallet-adapter-ant-design";
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 
-interface DashboardPageProps {
-  isWalletConnected: boolean;
-  connectWallet: () => Promise<void>;
-  walletAddress: string | null;
-  tokenData: {
-    name: string;
-    symbol: string;
-    supply: string;
-    imageUrl: string;
-    description: string;
-    youtube: string;
-    website: string;
-    twitter: string;
-    telegram: string;
-    discord: string;
-  } | null;
-}
-
+// Define the token data interface
 interface TokenData {
   id: string;
   name: string;
@@ -34,22 +18,19 @@ interface TokenData {
   messages: number;
 }
 
-const DashboardPage = ({
-  isWalletConnected,
-  connectWallet,
-  walletAddress,
-}: DashboardPageProps) => {
+// Note: The DashboardPageProps interface isn't being used, so I've removed it to avoid confusion
+
+const DashboardPage = () => {
   const [tokens, setTokens] = useState<TokenData[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [activeTab, setActiveTab] = useState("overview");
 
-  useEffect(() => {
-    // We'll load tokens regardless of wallet connection status
-    // In a real app, this would depend on the user's session/auth status
-    const fetchTokens = async () => {
+  // This function should be defined outside useEffect
+  const fetchTokens = () => {
+    try {
       setIsLoading(true);
-
-      // Mock data - we'll always show at least one token for demonstration
+      
+      // Mock data
       const mockTokens = [
         {
           id: "pepe-coin",
@@ -65,23 +46,34 @@ const DashboardPage = ({
           messages: 543,
         },
       ];
-
+      
+      console.log("Mock tokens:", mockTokens);
+      
+      // Using setTimeout to simulate an API call
       setTimeout(() => {
         setTokens(mockTokens);
         setIsLoading(false);
       }, 1000);
-    };
+    } catch (error) {
+      console.error("Error fetching tokens:", error);
+      setIsLoading(false);
+    }
+  };
 
+  // Run the effect only once on component mount
+  useEffect(() => {
+    console.log("DashboardPage useEffect running");
     fetchTokens();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
     <section className="bg-heroRed-light pt-24 pb-20">
       <div className="container max-w-[1200px] mx-auto px-4">
         <h1 className="text-center mb-10">Project Dashboard</h1>
-
+        
         {isLoading ? (
-          <div className="text-center p-10">
+          <div className="text-center p-10 min-h-[100vh]">
             <p>Loading your data...</p>
           </div>
         ) : tokens.length === 0 ? (
@@ -272,24 +264,7 @@ const DashboardPage = ({
 
                 <div className="mb-5">
                   <label className="block mb-2 font-bold">Wallet Status</label>
-                  {isWalletConnected ? (
-                    <input
-                      type="text"
-                      value={walletAddress || ""}
-                      readOnly
-                      className="w-full p-3 rounded-lg border-2 border-gray-300 text-base bg-gray-50"
-                    />
-                  ) : (
-                    <div className="flex items-center">
-                      <span className="text-red-500 mr-3">Not connected</span>
-                      <button
-                        onClick={connectWallet}
-                        className="primary-button py-2"
-                      >
-                        Connect Wallet
-                      </button>
-                    </div>
-                  )}
+                  <WalletSelector />
                 </div>
 
                 <div className="mb-5">
