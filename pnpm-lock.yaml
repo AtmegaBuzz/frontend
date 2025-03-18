@@ -26,6 +26,9 @@ importers:
       '@trustwallet/aptos-wallet-adapter':
         specifier: ^0.1.6
         version: 0.1.6
+      axios:
+        specifier: ^1.8.3
+        version: 1.8.3
       ethers:
         specifier: ^5.7.2
         version: 5.8.0
@@ -47,6 +50,9 @@ importers:
       react-router-dom:
         specifier: ^6.14.2
         version: 6.30.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      uuid:
+        specifier: ^11.1.0
+        version: 11.1.0
     devDependencies:
       '@types/node':
         specifier: ^20.4.5
@@ -2342,6 +2348,10 @@ packages:
 
   util-deprecate@1.0.2:
     resolution: {integrity: sha512-EPD5q1uXyFxJpCrLnCc1nHnq3gOa6DZBocAIiI2TaSCA7VCJ1UJDMagCzIkXNsUYfD1daK//LTEQ8xiIbrHtcw==}
+
+  uuid@11.1.0:
+    resolution: {integrity: sha512-0/A9rDy9P7cJ+8w1c9WD9V//9Wj15Ce2MPz8Ri6032usz+NfePxx5AcN3bN+r6ZL6jEo066/yNYB3tn4pQEx+A==}
+    hasBin: true
 
   uuid@9.0.1:
     resolution: {integrity: sha512-b+1eJOlsR9K8HJpow9Ok3fiWOWSIcIzXodvv0rQjVoOVNpWMpxf1wZNpt4y9h10odCNrqnYp1OBzRktckBe3sA==}
@@ -5180,6 +5190,8 @@ snapshots:
       punycode: 2.3.1
 
   util-deprecate@1.0.2: {}
+
+  uuid@11.1.0: {}
 
   uuid@9.0.1: {}
 

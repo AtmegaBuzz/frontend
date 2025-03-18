@@ -1,18 +1,39 @@
+import {v4 as uuid4} from "uuid"
 import { useWallet } from '@aptos-labs/wallet-adapter-react'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { WalletSelector } from "@aptos-labs/wallet-adapter-ant-design";
+
+
 import "@aptos-labs/wallet-adapter-ant-design/dist/index.css";
+import { login } from "@/apis/auth";
+
 
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
 
-  const { connected } = useWallet();
+  const { connected, signMessage, account } = useWallet();
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen)
   }
+
+  const handleSignMessage = async () => {
+    if (connected) {
+      const signature = await signMessage({
+        message: import.meta.env.VITE_SIGNATURE_MESSAGE,
+        nonce: uuid4().toString()
+
+      });
+      await login(account?.address.toString()!, account?.publicKey.toString()!, signature.fullMessage, signature.signature.toString() + "1");
+    }
+  }
+
+  useEffect(()=>{
+    console.log(connected);
+    handleSignMessage();
+  },[connected])
 
   return (
     <div className="fixed left-0 top-0 right-0 bottom-auto bg-transparent z-[9999]">
