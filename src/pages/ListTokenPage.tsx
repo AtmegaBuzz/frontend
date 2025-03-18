@@ -3,20 +3,10 @@ import { useNavigate } from "react-router-dom";
 import TokenInfoForm from "../forms/TokenInfoForm";
 import SocialLinksForm from "../forms/SocialLinksForm";
 import AgentConfigurationPopup from "../components/AgentConfigurationPopup";
-import { image } from "framer-motion/client";
+import { TokenData } from "@/interfaces";
+
 interface ListTokenPageProps {
-  tokenData: {
-    name: string;
-    symbol: string;
-    supply: string;
-    imageUrl: string;
-    description: string;
-    website: string;
-    twitter: string;
-    telegram: string;
-    discord: string;
-    youtube: string;
-  } | null;
+  tokenData: TokenData | null;
   updateTokenData: (data: any) => void;
 }
 
@@ -37,9 +27,10 @@ const ListTokenPage = ({
   const [tokenData, setTokenData] = useState({
     name: existingTokenData?.name || "",
     symbol: existingTokenData?.symbol || "",
-    supply: existingTokenData?.supply || "",
+    supply: existingTokenData?.supply || 1,
     imageUrl: existingTokenData?.imageUrl || "",
     description: existingTokenData?.description || "",
+    contractAddress:  existingTokenData?.contractAddress || "",
     website: existingTokenData?.website || "",
     youtube: existingTokenData?.youtube || "",
     twitter: existingTokenData?.twitter || "",
@@ -48,6 +39,9 @@ const ListTokenPage = ({
   });
   const [formStep, setFormStep] = useState(1);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [customImage, setCustomImage] = useState<File | null>(null);
+  const [customImagePreview, setCustomImagePreview] = useState<string | null>(null);
+
 
   // Social agents configuration
   const [showAgentPopup, setShowAgentPopup] = useState(false);
@@ -95,6 +89,21 @@ const ListTokenPage = ({
       ...prev,
       [name]: value,
     }));
+  };
+
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setCustomImage(file);
+
+      // Create preview
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setCustomImagePreview(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -151,8 +160,7 @@ const ListTokenPage = ({
             ...prev[selectedAgent],
             name:
               tokenData.name ||
-              `${
-                selectedAgent.charAt(0).toUpperCase() + selectedAgent.slice(1)
+              `${selectedAgent.charAt(0).toUpperCase() + selectedAgent.slice(1)
               } Bot`,
           },
         }));
@@ -193,6 +201,11 @@ const ListTokenPage = ({
             {formStep === 1 && (
               <TokenInfoForm
                 tokenData={tokenData}
+                customImage={customImage}
+                customImagePreview={customImagePreview}
+                setCustomImage={setCustomImage}
+                setCustomImagePreview={setCustomImagePreview}
+                handleFileChange={handleFileChange}
                 handleInputChange={handleInputChange}
                 nextStep={nextStep}
               />

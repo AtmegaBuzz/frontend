@@ -1,18 +1,6 @@
 import React from "react";
 import SocialAgentCard from "../components/SocialAgentCard";
-
-interface TokenData {
-  name: string;
-  symbol: string;
-  supply: string;
-  imageUrl: string;
-  description: string;
-  youtube: string;
-  website: string;
-  twitter: string;
-  telegram: string;
-  discord: string;
-}
+import { TokenData } from "@/interfaces";
 
 interface SocialAgentConfig {
   enabled: boolean;
@@ -63,7 +51,7 @@ const SocialLinksForm: React.FC<SocialLinksFormProps> = ({
 
       <div className="mb-5">
         <label htmlFor="website" className="block mb-2 font-bold">
-          Website
+          Website Url
         </label>
         <input
           type="url"
@@ -78,7 +66,7 @@ const SocialLinksForm: React.FC<SocialLinksFormProps> = ({
 
       <div className="mb-5">
         <label htmlFor="twitter" className="block mb-2 font-bold">
-          Twitter/X
+          Twitter/X Username
         </label>
         <input
           type="text"
@@ -87,7 +75,7 @@ const SocialLinksForm: React.FC<SocialLinksFormProps> = ({
           value={tokenData.twitter}
           onChange={handleInputChange}
           className="w-full p-3 rounded-lg border-2 border-gray-300 text-base"
-          placeholder="@username"
+          placeholder="username"
         />
       </div>
 
@@ -102,13 +90,13 @@ const SocialLinksForm: React.FC<SocialLinksFormProps> = ({
           value={tokenData.telegram}
           onChange={handleInputChange}
           className="w-full p-3 rounded-lg border-2 border-gray-300 text-base"
-          placeholder="@ZenithFrostyy"
+          placeholder="ZenithFrostyy"
         />
       </div>
 
       <div className="mb-5">
         <label htmlFor="discord" className="block mb-2 font-bold">
-          Discord Username
+          Discord Channel Invite
         </label>
         <input
           type="text"
@@ -123,7 +111,7 @@ const SocialLinksForm: React.FC<SocialLinksFormProps> = ({
 
       <div className="mb-5">
         <label htmlFor="youtube" className="block mb-2 font-bold">
-          Youtube Channel
+          Youtube Username
         </label>
         <input
           type="text"

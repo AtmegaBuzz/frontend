@@ -10,6 +10,7 @@ import {
   LiveStreamPage,
 } from "./pages";
 import { WalletProvider } from "./WalletProvider";
+import { ToastProvider } from "./hooks/toast";
 
 // Add type declaration for ethereum provider
 declare global {
@@ -44,38 +45,40 @@ const App = () => {
   return (
 
     <WalletProvider>
-      <Router>
-        <Navbar />
-        <Routes>
-          <Route path="/" element={<HomePage />} />
-          <Route path="/explore" element={<ExplorePage />} />
-          <Route
-            path="/list-token"
-            element={
-              <ListTokenPage
-                updateTokenData={updateTokenData}
-                tokenData={tokenData}
-              />
-            }
-          />
-          <Route
-            path="/create-character"
-            element={
-              <CharacterCreationPage
-                initialTokenData={tokenData}
-              />
-            }
-          />
-          <Route
-            path="/dashboard"
-            element={
-              <DashboardPage />
-            }
-          />
-          <Route path="/stream/:tokenId" element={<LiveStreamPage />} />
-        </Routes>
-        <Footer />
-      </Router>
+      <ToastProvider>
+        <Router>
+          <Navbar />
+          <Routes>
+            <Route path="/" element={<HomePage />} />
+            <Route path="/explore" element={<ExplorePage />} />
+            <Route
+              path="/list-token"
+              element={
+                <ListTokenPage
+                  updateTokenData={updateTokenData}
+                  tokenData={tokenData}
+                />
+              }
+            />
+            <Route
+              path="/create-character"
+              element={
+                <CharacterCreationPage
+                  initialTokenData={tokenData}
+                />
+              }
+            />
+            <Route
+              path="/dashboard"
+              element={
+                <DashboardPage />
+              }
+            />
+            <Route path="/stream/:tokenId" element={<LiveStreamPage />} />
+          </Routes>
+          <Footer />
+        </Router>
+      </ToastProvider>
     </WalletProvider>
   );
 };
