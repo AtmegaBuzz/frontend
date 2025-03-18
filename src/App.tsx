@@ -11,6 +11,7 @@ import {
 } from "./pages";
 import { WalletProvider } from "./WalletProvider";
 import { ToastProvider } from "./hooks/toast";
+import { Provider as JotaiProvider } from "jotai";
 
 // Add type declaration for ethereum provider
 declare global {
@@ -43,43 +44,44 @@ const App = () => {
   };
 
   return (
-
-    <WalletProvider>
-      <ToastProvider>
-        <Router>
-          <Navbar />
-          <Routes>
-            <Route path="/" element={<HomePage />} />
-            <Route path="/explore" element={<ExplorePage />} />
-            <Route
-              path="/list-token"
-              element={
-                <ListTokenPage
-                  updateTokenData={updateTokenData}
-                  tokenData={tokenData}
-                />
-              }
-            />
-            <Route
-              path="/create-character"
-              element={
-                <CharacterCreationPage
-                  initialTokenData={tokenData}
-                />
-              }
-            />
-            <Route
-              path="/dashboard"
-              element={
-                <DashboardPage />
-              }
-            />
-            <Route path="/stream/:tokenId" element={<LiveStreamPage />} />
-          </Routes>
-          <Footer />
-        </Router>
-      </ToastProvider>
-    </WalletProvider>
+    <JotaiProvider>
+      <WalletProvider>
+        <ToastProvider>
+          <Router>
+            <Navbar />
+            <Routes>
+              <Route path="/" element={<HomePage />} />
+              <Route path="/explore" element={<ExplorePage />} />
+              <Route
+                path="/list-token"
+                element={
+                  <ListTokenPage
+                    updateTokenData={updateTokenData}
+                    tokenData={tokenData}
+                  />
+                }
+              />
+              <Route
+                path="/create-character"
+                element={
+                  <CharacterCreationPage
+                    initialTokenData={tokenData}
+                  />
+                }
+              />
+              <Route
+                path="/dashboard"
+                element={
+                  <DashboardPage />
+                }
+              />
+              <Route path="/stream/:tokenId" element={<LiveStreamPage />} />
+            </Routes>
+            <Footer />
+          </Router>
+        </ToastProvider>
+      </WalletProvider>
+    </JotaiProvider>
   );
 };
 

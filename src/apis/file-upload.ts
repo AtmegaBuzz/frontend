@@ -1,21 +1,27 @@
 import axios from "axios";
 
 
-export async function login(wallet_address: string, public_key: string, message: string, signature: string) {
+export async function uploadFile(authToken: string, file: File, containerName: string) {
+
+    const formData = new FormData();
+    formData.append("file", file);
+    formData.append("containerName", containerName)
+
     try {
 
-        const response = await axios.post(`${import.meta.env.VITE_API_URL}/auth/login`, {
-            wallet_address,
-            public_key,
-            message,
-            signature
-        });
+        const response = await axios.post(`${import.meta.env.VITE_API_URL}/file/upload`,
+            formData,
+            {
+                headers: {
+                    Authorization: `Bearer ${authToken}`
+                }
+            }
+        );
 
-        console.log("Access Token:", response.data.access_token);
         return {
-            message: response.data.access_token,
+            message: response.data.url,
             errorType: null,
-            statusCode: 200
+            statusCode: response.status
         }
     } catch (error) {
 

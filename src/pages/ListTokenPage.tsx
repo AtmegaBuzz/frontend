@@ -4,6 +4,11 @@ import TokenInfoForm from "../forms/TokenInfoForm";
 import SocialLinksForm from "../forms/SocialLinksForm";
 import AgentConfigurationPopup from "../components/AgentConfigurationPopup";
 import { TokenData } from "@/interfaces";
+import { createToken } from "@/apis/create-token-form";
+import { useAtom } from "jotai";
+import { authTokenAtom } from "@/atoms/global.atom";
+import { useToast } from "@/hooks/toast";
+import { uploadFile } from "@/apis/file-upload";
 
 interface ListTokenPageProps {
   tokenData: TokenData | null;
@@ -25,12 +30,12 @@ const ListTokenPage = ({
 }: ListTokenPageProps) => {
   const navigate = useNavigate();
   const [tokenData, setTokenData] = useState({
-    name: existingTokenData?.name || "",
+    tokenName: existingTokenData?.tokenName || "",
     symbol: existingTokenData?.symbol || "",
     supply: existingTokenData?.supply || 1,
-    imageUrl: existingTokenData?.imageUrl || "",
-    description: existingTokenData?.description || "",
-    contractAddress:  existingTokenData?.contractAddress || "",
+    tokenImageUrl: existingTokenData?.tokenImageUrl || "",
+    tokenDescription: existingTokenData?.tokenDescription || "",
+    contractAddress: existingTokenData?.contractAddress || null,
     website: existingTokenData?.website || "",
     youtube: existingTokenData?.youtube || "",
     twitter: existingTokenData?.twitter || "",
@@ -41,6 +46,8 @@ const ListTokenPage = ({
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [customImage, setCustomImage] = useState<File | null>(null);
   const [customImagePreview, setCustomImagePreview] = useState<string | null>(null);
+  const [authToken,] = useAtom(authTokenAtom);
+  const { toast } = useToast();
 
 
   // Social agents configuration
@@ -113,11 +120,44 @@ const ListTokenPage = ({
     // Pass token data up to parent
     updateTokenData(tokenData);
 
-    // Simulate form submission and proceed to character creation
-    setTimeout(() => {
-      setIsSubmitting(false);
-      navigate("/create-character");
-    }, 1000);
+    let uploadFileResp = await uploadFile(authToken!, customImage!, "tokens");
+
+    if (uploadFileResp.statusCode !== 201) {
+      toast({
+        type: "danger",
+        message: uploadFileResp.message,
+        duration: 3000
+      });
+      return;
+    }
+
+    setTokenData((prevState) => ({
+      ...prevState,
+      tokenImageUrl: uploadFileResp.message
+    }));
+
+    let { message, statusCode } = await createToken(authToken!, tokenData);
+
+    setIsSubmitting(false);
+
+    if (statusCode === 201) {
+      
+      toast({
+        type: "success",
+        message: "Token Created Successfully!",
+        duration: 3000
+      });
+      navigate("/create-character", { state: { id: message } });
+
+    } else {
+
+      toast({
+        type: "danger",
+        message: message,
+        duration: 3000
+      });
+    
+    }
   };
 
   const nextStep = () => {
@@ -159,7 +199,7 @@ const ListTokenPage = ({
           [selectedAgent]: {
             ...prev[selectedAgent],
             name:
-              tokenData.name ||
+              tokenData.tokenName ||
               `${selectedAgent.charAt(0).toUpperCase() + selectedAgent.slice(1)
               } Bot`,
           },
@@ -232,7 +272,7 @@ const ListTokenPage = ({
               closeAgentPopup={closeAgentPopup}
               handleAgentChange={handleAgentChange}
               saveAgentConfig={saveAgentConfig}
-              tokenName={tokenData.name}
+              tokenName={tokenData.tokenName}
             />
           )}
         </div>

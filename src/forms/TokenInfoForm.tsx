@@ -55,14 +55,14 @@ const TokenInfoForm: React.FC<TokenInfoFormProps> = ({
       <p>Enter your memecoin's basic information.</p>
 
       <div className="my-5">
-        <label htmlFor="name" className="block mb-2 font-bold">
+        <label htmlFor="tokenName" className="block mb-2 font-bold">
           Token Name <span className="text-red-500">*</span>
         </label>
         <input
           type="text"
-          id="name"
-          name="name"
-          value={tokenData.name}
+          id="tokenName"
+          name="tokenName"
+          value={tokenData.tokenName}
           onChange={handleInputChange}
           required
           className="w-full p-3 rounded-lg border-2 border-gray-300 text-base"
@@ -179,14 +179,14 @@ const TokenInfoForm: React.FC<TokenInfoFormProps> = ({
       </div>
 
       <div className="mb-5">
-        <label htmlFor="description" className="block mb-2 font-bold">
+        <label htmlFor="tokenDescription" className="block mb-2 font-bold">
           Token Description <span className="text-red-500">*</span>
         </label>
         <input
           type="text"
-          id="description"
-          name="description"
-          value={tokenData.description}
+          id="tokenDescription"
+          name="tokenDescription"
+          value={tokenData.tokenDescription}
           onChange={handleInputChange}
           required
           className="w-full p-3 rounded-lg border-2 border-gray-300 text-base"
@@ -202,7 +202,7 @@ const TokenInfoForm: React.FC<TokenInfoFormProps> = ({
           type="text"
           id="contractAddress"
           name="contractAddress"
-          value={tokenData.contractAddress}
+          value={tokenData.contractAddress!}
           onChange={handleInputChange}
           className="w-full p-3 rounded-lg border-2 border-gray-300 text-base"
           placeholder="0x..."

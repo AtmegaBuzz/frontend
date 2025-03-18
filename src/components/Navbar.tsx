@@ -1,4 +1,4 @@
-import {v4 as uuid4} from "uuid"
+import { v4 as uuid4 } from "uuid"
 import { useWallet } from '@aptos-labs/wallet-adapter-react'
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
@@ -7,11 +7,17 @@ import { WalletSelector } from "@aptos-labs/wallet-adapter-ant-design";
 
 import "@aptos-labs/wallet-adapter-ant-design/dist/index.css";
 import { login } from "@/apis/auth";
+import { useToast } from "@/hooks/toast";
+import { useAtom } from "jotai";
+import { authTokenAtom } from "@/atoms/global.atom";
 
 
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
+  const { toast } = useToast();
+
+  const [token, setToken] = useAtom(authTokenAtom);
 
   const { connected, signMessage, account } = useWallet();
 
@@ -26,14 +32,30 @@ const Navbar = () => {
         nonce: uuid4().toString()
 
       });
-      await login(account?.address.toString()!, account?.publicKey.toString()!, signature.fullMessage, signature.signature.toString() + "1");
+      const { message, statusCode } = await login(account?.address.toString()!, account?.publicKey.toString()!, signature.fullMessage, signature.signature.toString());
+
+      if (statusCode === 200) {
+        setToken(message);
+        toast({
+          type: "success",
+          message: "Logged in successfully",
+          duration: 3000
+        });
+      } else {
+        toast({
+          type: "danger",
+          message: message,
+          duration: 3000
+        });
+      }
+
     }
   }
 
-  useEffect(()=>{
+  useEffect(() => {
     console.log(connected);
     handleSignMessage();
-  },[connected])
+  }, [connected])
 
   return (
     <div className="fixed left-0 top-0 right-0 bottom-auto bg-transparent z-[9999]">
@@ -169,7 +191,7 @@ const Navbar = () => {
   )
 }
 
-export default Navbar 
+export default Navbar
 
 // npm install @aptos-labs/wallet-adapter-react @aptos-labs/wallet-adapter-ant-design
 // npm install @aptos-labs/wallet-adapter-core
