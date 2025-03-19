@@ -1,4 +1,4 @@
-import { TokenData } from "@/interfaces";
+import { AgentTemplate, TokenData } from "@/interfaces";
 import axios from "axios";
 
 
@@ -43,4 +43,26 @@ export async function createToken(authToken: string, tokenData: TokenData) {
         }
         return { message: 'Something went wrong!', error: "danger", statusCode: 404 };
     }
+}
+
+export async function getAgentTemplates(authToken: string): Promise<AgentTemplate[]> {
+
+    try {
+
+        const response = await axios.get(`${import.meta.env.VITE_API_URL}/agent/templates`,
+            {
+                headers: {
+                    Authorization: `Bearer ${authToken}`
+                }
+            }
+        );
+
+        const agentTemplates: AgentTemplate[] = response.data;
+
+        return agentTemplates;
+        
+    } catch {
+        return [];
+    }
+
 }

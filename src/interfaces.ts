@@ -11,3 +11,12 @@ export interface TokenData {
   telegram: string;
   discord: string;
 }
+
+export interface AgentTemplate {
+  id: number;
+  agentImageUrl: string;
+  agentName: string;
+  agentIpfsUrl: string;
+  createdAt: string;
+  updatedAt: string;
+}

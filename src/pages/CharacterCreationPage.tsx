@@ -1,4 +1,8 @@
-import { useState } from "react";
+import { getAgentTemplates } from "@/apis/create-token-form";
+import { authTokenAtom } from "@/atoms/global.atom";
+import { AgentTemplate } from "@/interfaces";
+import { useAtom } from "jotai";
+import { useEffect, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 
 interface CharacterCreationPageProps {
@@ -35,12 +39,16 @@ const CharacterCreationPage = ({
   const tokenData = location.state?.tokenData ||
     initialTokenData || { name: "", symbol: "" };
 
+  const [agentTemplate, setAgentTemplates] = useState<AgentTemplate[]>([]);
+
   const [characterType, setCharacterType] = useState<CharacterType>("vtuber");
   const [selectedTemplate, setSelectedTemplate] = useState<number | null>(1);
   const [customImage, setCustomImage] = useState<File | null>(null);
   const [customImagePreview, setCustomImagePreview] = useState<string | null>(
     null
   );
+
+  const [authToken,] = useAtom(authTokenAtom);
 
   // Character name is automatically derived from token name
   const [characterName] = useState(
@@ -87,14 +95,17 @@ const CharacterCreationPage = ({
     setCurrentStep((prev) => prev - 1);
   };
 
-  const templates = [
-    { id: 1, image: "/images/single-bot@2x.png", name: "Blue Robot" },
-    { id: 2, image: "/images/single-bot@2x.png", name: "Green Robot" },
-    { id: 3, image: "/images/single-bot@2x.png", name: "Pink Robot" },
-    { id: 4, image: "/images/single-bot@2x.png", name: "Yellow Robot" },
-    { id: 5, image: "/images/single-bot@2x.png", name: "Purple Robot" },
-    { id: 6, image: "/images/single-bot@2x.png", name: "Orange Robot" },
-  ];
+  useEffect(() => {
+
+    const getAgentTemplateData = async () => {
+
+      const agentData = await getAgentTemplates(authToken!);
+      setAgentTemplates(agentData);
+    }
+
+    getAgentTemplateData();
+
+  }, [])
 
   return (
     <section className="bg-blue-dark bg-pattern pt-24 pb-20">
@@ -117,11 +128,10 @@ const CharacterCreationPage = ({
                 <div className="flex gap-5 mb-8 mt-4">
                   <div
                     onClick={() => setCharacterType("vtuber")}
-                    className={`flex-1 p-5 border-4 rounded-xl text-center cursor-pointer transition-all duration-300 ${
-                      characterType === "vtuber"
-                        ? "border-primary shadow-md transform -translate-y-1 bg-primary/5"
-                        : "border-gray-200 hover:border-primary/40"
-                    }`}
+                    className={`flex-1 p-5 border-4 rounded-xl text-center cursor-pointer transition-all duration-300 ${characterType === "vtuber"
+                      ? "border-primary shadow-md transform -translate-y-1 bg-primary/5"
+                      : "border-gray-200 hover:border-primary/40"
+                      }`}
                   >
                     <img
                       src="/images/single-bot@2x.png"
@@ -136,11 +146,10 @@ const CharacterCreationPage = ({
 
                   <div
                     onClick={() => setCharacterType("custom")}
-                    className={`flex-1 p-5 border-4 rounded-xl text-center cursor-pointer transition-all duration-300 ${
-                      characterType === "custom"
-                        ? "border-primary shadow-md transform -translate-y-1 bg-primary/5"
-                        : "border-gray-200 hover:border-primary/40"
-                    }`}
+                    className={`flex-1 p-5 border-4 rounded-xl text-center cursor-pointer transition-all duration-300 ${characterType === "custom"
+                      ? "border-primary shadow-md transform -translate-y-1 bg-primary/5"
+                      : "border-gray-200 hover:border-primary/40"
+                      }`}
                   >
                     <img
                       src="/images/single-bot@2x.png"
@@ -158,22 +167,25 @@ const CharacterCreationPage = ({
                   <div>
                     <h3>Select Template</h3>
                     <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mb-8">
-                      {templates.map((template) => (
+                      {agentTemplate.map((template) => (
                         <div
                           key={template.id}
                           onClick={() => setSelectedTemplate(template.id)}
-                          className={`border-4 rounded-lg p-4 text-center cursor-pointer transition-all duration-300 ${
-                            selectedTemplate === template.id
+                          className={`border-4 rounded-lg p-4 flex flex-col h-full cursor-pointer transition-all duration-300 ${selectedTemplate === template.id
                               ? "border-primary shadow-md transform -translate-y-1 bg-primary/5"
                               : "border-gray-200 hover:border-primary/40"
-                          }`}
+                            }`}
                         >
-                          <img
-                            src={template.image}
-                            alt={template.name}
-                            className="w-full mb-2"
-                          />
-                          <p className="m-0 font-medium">{template.name}</p>
+                          <div className="flex-grow h-4/5 overflow-hidden mb-2">
+                            <img
+                              src={template.agentImageUrl}
+                              alt={template.agentName}
+                              className="w-full h-full object-cover rounded-md"
+                            />
+                          </div>
+                          <div className="h-1/5 flex items-center justify-center">
+                            <p className="m-0 font-medium text-center">{template.agentName}</p>
+                          </div>
                         </div>
                       ))}
                     </div>
@@ -320,11 +332,10 @@ const CharacterCreationPage = ({
                         key={type}
                         type="button"
                         onClick={() => setVoiceType(type)}
-                        className={`py-3 px-4 rounded-xl border-2 font-medium transition-all duration-200 ${
-                          voiceType === type
-                            ? "bg-primary text-white border-primary shadow-md transform -translate-y-1"
-                            : "bg-white text-gray-700 border-gray-200 hover:border-primary/40"
-                        }`}
+                        className={`py-3 px-4 rounded-xl border-2 font-medium transition-all duration-200 ${voiceType === type
+                          ? "bg-primary text-white border-primary shadow-md transform -translate-y-1"
+                          : "bg-white text-gray-700 border-gray-200 hover:border-primary/40"
+                          }`}
                       >
                         {type.charAt(0).toUpperCase() + type.slice(1)}
                       </button>
@@ -351,11 +362,10 @@ const CharacterCreationPage = ({
                         key={type}
                         type="button"
                         onClick={() => setPersonalityType(type)}
-                        className={`py-3 px-4 rounded-xl border-2 font-medium transition-all duration-200 ${
-                          personalityType === type
-                            ? "bg-primary text-white border-primary shadow-md transform -translate-y-1"
-                            : "bg-white text-gray-700 border-gray-200 hover:border-primary/40"
-                        }`}
+                        className={`py-3 px-4 rounded-xl border-2 font-medium transition-all duration-200 ${personalityType === type
+                          ? "bg-primary text-white border-primary shadow-md transform -translate-y-1"
+                          : "bg-white text-gray-700 border-gray-200 hover:border-primary/40"
+                          }`}
                       >
                         {type.charAt(0).toUpperCase() + type.slice(1)}
                       </button>
