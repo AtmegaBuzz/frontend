@@ -1,4 +1,8 @@
+import { getTokens } from "@/apis/token";
+import { useToast } from "@/hooks/toast";
+import { TokensData } from "@/interfaces";
 import { WalletSelector } from "@aptos-labs/wallet-adapter-ant-design";
+import { useWallet } from "@aptos-labs/wallet-adapter-react";
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 
@@ -18,18 +22,41 @@ interface TokenData {
   messages: number;
 }
 
+function randint(min: number, max: number) {
+  return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
 // Note: The DashboardPageProps interface isn't being used, so I've removed it to avoid confusion
 
 const DashboardPage = () => {
-  const [tokens, setTokens] = useState<TokenData[]>([]);
+  const [tokens, setTokens] = useState<TokensData[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [activeTab, setActiveTab] = useState("overview");
 
+  const { toast } = useToast();
+  const { account } = useWallet();
+
   // This function should be defined outside useEffect
-  const fetchTokens = () => {
+  const fetchTokens = async () => {
     try {
       setIsLoading(true);
-      
+
+
+      const { message, statusCode } = await getTokens(account?.address.toString(), "", 1, 100);
+
+      if (statusCode !== 200) {
+        toast({
+          type: "danger",
+          message: message,
+          duration: 3000
+        });
+        setTokens([]);
+      }
+
+      else {
+        setTokens(message as TokensData[]);
+      }
+
       // Mock data
       const mockTokens = [
         {
@@ -46,14 +73,8 @@ const DashboardPage = () => {
           messages: 543,
         },
       ];
-      
-      console.log("Mock tokens:", mockTokens);
-      
-      // Using setTimeout to simulate an API call
-      setTimeout(() => {
-        setTokens(mockTokens);
-        setIsLoading(false);
-      }, 1000);
+
+      setIsLoading(false);
     } catch (error) {
       console.error("Error fetching tokens:", error);
       setIsLoading(false);
@@ -71,7 +92,7 @@ const DashboardPage = () => {
     <section className="bg-heroRed-light pt-24 pb-20">
       <div className="container max-w-[1200px] mx-auto px-4">
         <h1 className="text-center mb-10">Project Dashboard</h1>
-        
+
         {isLoading ? (
           <div className="text-center p-10 min-h-[100vh]">
             <p>Loading your data...</p>
@@ -90,31 +111,28 @@ const DashboardPage = () => {
             <div className="flex border-b border-gray-200 mb-8">
               <button
                 onClick={() => setActiveTab("overview")}
-                className={`px-5 py-2 bg-transparent border-none ${
-                  activeTab === "overview"
-                    ? "border-b-3 border-primary font-bold"
-                    : "font-normal"
-                } cursor-pointer`}
+                className={`px-5 py-2 bg-transparent border-none ${activeTab === "overview"
+                  ? "border-b-3 border-primary font-bold"
+                  : "font-normal"
+                  } cursor-pointer`}
               >
                 Overview
               </button>
               <button
                 onClick={() => setActiveTab("analytics")}
-                className={`px-5 py-2 bg-transparent border-none ${
-                  activeTab === "analytics"
-                    ? "border-b-3 border-primary font-bold"
-                    : "font-normal"
-                } cursor-pointer`}
+                className={`px-5 py-2 bg-transparent border-none ${activeTab === "analytics"
+                  ? "border-b-3 border-primary font-bold"
+                  : "font-normal"
+                  } cursor-pointer`}
               >
                 Analytics
               </button>
               <button
                 onClick={() => setActiveTab("settings")}
-                className={`px-5 py-2 bg-transparent border-none ${
-                  activeTab === "settings"
-                    ? "border-b-3 border-primary font-bold"
-                    : "font-normal"
-                } cursor-pointer`}
+                className={`px-5 py-2 bg-transparent border-none ${activeTab === "settings"
+                  ? "border-b-3 border-primary font-bold"
+                  : "font-normal"
+                  } cursor-pointer`}
               >
                 Settings
               </button>
@@ -132,32 +150,32 @@ const DashboardPage = () => {
                     >
                       <div className="relative">
                         <img
-                          src={token.thumbnail}
-                          alt={token.name}
+                          src={token.tokenImageUrl}
+                          alt={token.tokenName}
                           className="w-full h-[180px] object-cover"
                         />
-                        {token.isLive && (
+                        {/* {token.isLive && (
                           <div className="absolute top-2.5 right-2.5 bg-red-500 text-white px-2 py-1 rounded text-xs font-bold">
                             LIVE
                           </div>
-                        )}
+                        )} */}
                         <div className="absolute bottom-2.5 right-2.5 bg-black/70 text-white px-2 py-1 rounded text-xs">
-                          {token.viewers} viewers
+                          {randint(0, 1000)} viewers
                         </div>
                       </div>
 
                       <div className="p-5">
                         <h3 className="mb-2">
-                          {token.name} ({token.symbol})
+                          {token.tokenName} ({token.symbol})
                         </h3>
                         <p className="mb-4 text-sm text-gray-600">
-                          Character: {token.character}
+                          Character: { token.personalityType[0] }
                         </p>
 
                         <div className="flex justify-between mb-5">
                           <div className="text-center">
                             <div className="font-bold text-lg">
-                              {token.followers}
+                              {randint(3,300)}
                             </div>
                             <div className="text-xs text-gray-600">
                               Followers
@@ -165,7 +183,7 @@ const DashboardPage = () => {
                           </div>
                           <div className="text-center">
                             <div className="font-bold text-lg">
-                              {token.engagement}%
+                              {randint(0,100)}%
                             </div>
                             <div className="text-xs text-gray-600">
                               Engagement
@@ -173,7 +191,7 @@ const DashboardPage = () => {
                           </div>
                           <div className="text-center">
                             <div className="font-bold text-lg">
-                              {token.messages}
+                              {randint(0,10000)}
                             </div>
                             <div className="text-xs text-gray-600">
                               Messages
@@ -217,14 +235,14 @@ const DashboardPage = () => {
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 mb-8">
                   <div className="p-5 bg-gray-50 rounded-lg text-center">
                     <div className="text-2xl font-bold mb-1">
-                      {tokens.reduce((sum, token) => sum + token.viewers, 0)}
+                      {tokens.reduce((sum, token) => sum + randint(0,100), 0)}
                     </div>
                     <div>Current Viewers</div>
                   </div>
 
                   <div className="p-5 bg-gray-50 rounded-lg text-center">
                     <div className="text-2xl font-bold mb-1">
-                      {tokens.reduce((sum, token) => sum + token.followers, 0)}
+                      {tokens.reduce((sum, token) => sum + randint(0,1000), 0)}
                     </div>
                     <div>Total Followers</div>
                   </div>
@@ -233,7 +251,7 @@ const DashboardPage = () => {
                     <div className="text-2xl font-bold mb-1">
                       {Math.round(
                         tokens.reduce(
-                          (sum, token) => sum + token.engagement,
+                          (sum, token) => sum + randint(0,100),
                           0
                         ) / tokens.length
                       )}
@@ -244,7 +262,7 @@ const DashboardPage = () => {
 
                   <div className="p-5 bg-gray-50 rounded-lg text-center">
                     <div className="text-2xl font-bold mb-1">
-                      {tokens.reduce((sum, token) => sum + token.messages, 0)}
+                      {tokens.reduce((sum, token) => sum + randint(0,10000), 0)}
                     </div>
                     <div>Total Messages</div>
                   </div>

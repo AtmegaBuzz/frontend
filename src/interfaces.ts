@@ -20,3 +20,14 @@ export interface AgentTemplate {
   createdAt: string;
   updatedAt: string;
 }
+
+
+export interface TokensData {
+  id: number;
+  tokenName: string;
+  symbol: string;
+  tokenDescription: string;
+  tokenImageUrl: string;
+  contractAddress: string | null;
+  personalityType: string[];
+}
