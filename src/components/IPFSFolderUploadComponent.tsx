@@ -1,4 +1,4 @@
-import React, { useState, useRef, ChangeEvent, useEffect } from 'react';
+import React, { useState, useRef, ChangeEvent } from 'react';
 import axios from 'axios';
 
 // Extend the HTMLInputElement interface to include directory attributes

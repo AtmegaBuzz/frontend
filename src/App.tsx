@@ -57,7 +57,7 @@ const App = () => {
                 element={
                   <ListTokenPage
                     updateTokenData={updateTokenData}
-                    tokenData={tokenData}
+                    tokenData={null}
                   />
                 }
               />

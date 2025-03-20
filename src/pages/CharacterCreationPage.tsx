@@ -1,7 +1,6 @@
 import { addTokenCharacter, addTokenPersonality, getAgentTemplates } from "@/apis/create-token-form";
 import { uploadFile } from "@/apis/file-upload";
 import { authTokenAtom } from "@/atoms/global.atom";
-import FolderUpload from "@/components/FolderUpload";
 import ImageUpload from "@/components/ImageUpload";
 import IPFSFolderUploadComponent from "@/components/IPFSFolderUploadComponent";
 import { useToast } from "@/hooks/toast";

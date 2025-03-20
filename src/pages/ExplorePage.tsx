@@ -2,14 +2,14 @@ import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { Sparkles, TrendingUp, Tv, Flame, Zap, Gamepad2 } from 'lucide-react'
 // Import character images
-import char1 from '@/assets/char1.jpeg'
-import char2 from '@/assets/char2.jpeg'
-import char3 from '@/assets/char3.jpeg'
-import char4 from '@/assets/char4.jpeg'
-import f1 from '@/assets/1f.png'
-import f2 from '@/assets/2f.png'
-import f3 from '@/assets/3f.png'
-import f4 from '@/assets/f4.png'
+// import char1 from '@/assets/char1.jpeg'
+// import char2 from '@/assets/char2.jpeg'
+// import char3 from '@/assets/char3.jpeg'
+// import char4 from '@/assets/char4.jpeg'
+// import f1 from '@/assets/1f.png'
+// import f2 from '@/assets/2f.png'
+// import f3 from '@/assets/3f.png'
+// import f4 from '@/assets/f4.png'
 import { TokensData } from '@/interfaces'
 import { getTokens } from '@/apis/token'
 
@@ -18,16 +18,16 @@ function randint(min: number, max: number) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
-interface StreamInfo {
-  id: string
-  tokenName: string
-  characterName: string
-  thumbnail: string
-  viewerCount: number
-  isLive: boolean
-  category: string
-  trending?: boolean
-}
+// interface StreamInfo {
+//   id: string
+//   tokenName: string
+//   characterName: string
+//   thumbnail: string
+//   viewerCount: number
+//   isLive: boolean
+//   category: string
+//   trending?: boolean
+// }
 
 const ExplorePage = () => {
   const [streams, setStreams] = useState<TokensData[]>([])
@@ -35,83 +35,83 @@ const ExplorePage = () => {
   const [filter, setFilter] = useState('all')
 
   useEffect(() => {
-    const mockStreams = [
-      {
-        id: 'pepe-coin',
-        tokenName: '$PEPE COIN',
-        characterName: 'Pepe The Based Frog',
-        thumbnail: char1,
-        viewerCount: 1256,
-        isLive: true,
-        category: 'meme',
-        trending: true
-      },
-      {
-        id: 'doge-coin',
-        tokenName: '$PIXEL WAR', // Changed from '$DOGE KING'
-        characterName: 'Pixel Warrior', // Changed from 'Much Wow Doge'
-        thumbnail: char2,
-        viewerCount: 989,
-        isLive: true,
-        category: 'meme',
-        trending: true
-      },
-      {
-        id: 'shiba-inu',
-        tokenName: '$SHIB ARMY',
-        characterName: 'Shiba Commander',
-        thumbnail: f1,
-        viewerCount: 845,
-        isLive: true,
-        category: 'meme'
-      },
-      {
-        id: 'wojak-coin',
-        tokenName: '$WOJAK',
-        characterName: 'Feel Guy Alpha',
-        thumbnail: f2,
-        viewerCount: 712,
-        isLive: false,
-        category: 'meme'
-      },
-      {
-        id: 'memecoin-1',
-        tokenName: '$MOON SHOT',
-        characterName: 'Moon Boy',
-        thumbnail: char3,
-        viewerCount: 598,
-        isLive: true,
-        category: 'defi'
-      },
-      {
-        id: 'memecoin-2',
-        tokenName: '$CHAD INU',
-        characterName: 'Gigachad',
-        thumbnail: f3,
-        viewerCount: 487,
-        isLive: true,
-        category: 'defi'
-      },
-      {
-        id: 'memecoin-3',
-        tokenName: '$DOGE KING', // Changed from '$PIXEL WAR'
-        characterName: 'Much Wow Doge', // Changed from 'Pixel Warrior'
-        thumbnail: char4,
-        viewerCount: 376,
-        isLive: false,
-        category: 'gaming'
-      },
-      {
-        id: 'memecoin-4',
-        tokenName: '$GAME KING',
-        characterName: 'Gaming Legend',
-        thumbnail: f4,
-        viewerCount: 665,
-        isLive: true,
-        category: 'gaming',
-        trending: true
-      }
-    ]
+    // const mockStreams = [
+    //   {
+    //     id: 'pepe-coin',
+    //     tokenName: '$PEPE COIN',
+    //     characterName: 'Pepe The Based Frog',
+    //     thumbnail: char1,
+    //     viewerCount: 1256,
+    //     isLive: true,
+    //     category: 'meme',
+    //     trending: true
+    //   },
+    //   {
+    //     id: 'doge-coin',
+    //     tokenName: '$PIXEL WAR', // Changed from '$DOGE KING'
+    //     characterName: 'Pixel Warrior', // Changed from 'Much Wow Doge'
+    //     thumbnail: char2,
+    //     viewerCount: 989,
+    //     isLive: true,
+    //     category: 'meme',
+    //     trending: true
+    //   },
+    //   {
+    //     id: 'shiba-inu',
+    //     tokenName: '$SHIB ARMY',
+    //     characterName: 'Shiba Commander',
+    //     thumbnail: f1,
+    //     viewerCount: 845,
+    //     isLive: true,
+    //     category: 'meme'
+    //   },
+    //   {
+    //     id: 'wojak-coin',
+    //     tokenName: '$WOJAK',
+    //     characterName: 'Feel Guy Alpha',
+    //     thumbnail: f2,
+    //     viewerCount: 712,
+    //     isLive: false,
+    //     category: 'meme'
+    //   },
+    //   {
+    //     id: 'memecoin-1',
+    //     tokenName: '$MOON SHOT',
+    //     characterName: 'Moon Boy',
+    //     thumbnail: char3,
+    //     viewerCount: 598,
+    //     isLive: true,
+    //     category: 'defi'
+    //   },
+    //   {
+    //     id: 'memecoin-2',
+    //     tokenName: '$CHAD INU',
+    //     characterName: 'Gigachad',
+    //     thumbnail: f3,
+    //     viewerCount: 487,
+    //     isLive: true,
+    //     category: 'defi'
+    //   },
+    //   {
+    //     id: 'memecoin-3',
+    //     tokenName: '$DOGE KING', // Changed from '$PIXEL WAR'
+    //     characterName: 'Much Wow Doge', // Changed from 'Pixel Warrior'
+    //     thumbnail: char4,
+    //     viewerCount: 376,
+    //     isLive: false,
+    //     category: 'gaming'
+    //   },
+    //   {
+    //     id: 'memecoin-4',
+    //     tokenName: '$GAME KING',
+    //     characterName: 'Gaming Legend',
+    //     thumbnail: f4,
+    //     viewerCount: 665,
+    //     isLive: true,
+    //     category: 'gaming',
+    //     trending: true
+    //   }
+    // ]
 
     const fetchStreams = async () => {
       const { message, statusCode } = await getTokens("", "", 1, 9);

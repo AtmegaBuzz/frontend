@@ -7,20 +7,20 @@ import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 
 // Define the token data interface
-interface TokenData {
-  id: string;
-  name: string;
-  symbol: string;
+// interface TokenData {
+//   id: string;
+//   name: string;
+//   symbol: string;
 
-  address: string;
-  character: string;
-  thumbnail: string;
-  viewers: number;
-  isLive: boolean;
-  engagement: number;
-  followers: number;
-  messages: number;
-}
+//   address: string;
+//   character: string;
+//   thumbnail: string;
+//   viewers: number;
+//   isLive: boolean;
+//   engagement: number;
+//   followers: number;
+//   messages: number;
+// }
 
 function randint(min: number, max: number) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
@@ -58,21 +58,21 @@ const DashboardPage = () => {
       }
 
       // Mock data
-      const mockTokens = [
-        {
-          id: "pepe-coin",
-          name: "Pepe Coin",
-          symbol: "PEPE",
-          address: "0x1234...5678",
-          character: "Pepe the Frog",
-          thumbnail: "/images/single-bot@2x.png",
-          viewers: 128,
-          isLive: true,
-          engagement: 76,
-          followers: 1246,
-          messages: 543,
-        },
-      ];
+      // const mockTokens = [
+      //   {
+      //     id: "pepe-coin",
+      //     name: "Pepe Coin",
+      //     symbol: "PEPE",
+      //     address: "0x1234...5678",
+      //     character: "Pepe the Frog",
+      //     thumbnail: "/images/single-bot@2x.png",
+      //     viewers: 128,
+      //     isLive: true,
+      //     engagement: 76,
+      //     followers: 1246,
+      //     messages: 543,
+      //   },
+      // ];
 
       setIsLoading(false);
     } catch (error) {
@@ -235,14 +235,14 @@ const DashboardPage = () => {
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 mb-8">
                   <div className="p-5 bg-gray-50 rounded-lg text-center">
                     <div className="text-2xl font-bold mb-1">
-                      {tokens.reduce((sum, token) => sum + randint(0,100), 0)}
+                      {tokens.reduce((sum, ) => sum + randint(0,100), 0)}
                     </div>
                     <div>Current Viewers</div>
                   </div>
 
                   <div className="p-5 bg-gray-50 rounded-lg text-center">
                     <div className="text-2xl font-bold mb-1">
-                      {tokens.reduce((sum, token) => sum + randint(0,1000), 0)}
+                      {tokens.reduce((sum, ) => sum + randint(0,1000), 0)}
                     </div>
                     <div>Total Followers</div>
                   </div>
@@ -251,7 +251,7 @@ const DashboardPage = () => {
                     <div className="text-2xl font-bold mb-1">
                       {Math.round(
                         tokens.reduce(
-                          (sum, token) => sum + randint(0,100),
+                          (sum, ) => sum + randint(0,100),
                           0
                         ) / tokens.length
                       )}
@@ -262,7 +262,7 @@ const DashboardPage = () => {
 
                   <div className="p-5 bg-gray-50 rounded-lg text-center">
                     <div className="text-2xl font-bold mb-1">
-                      {tokens.reduce((sum, token) => sum + randint(0,10000), 0)}
+                      {tokens.reduce((sum, ) => sum + randint(0,10000), 0)}
                     </div>
                     <div>Total Messages</div>
                   </div>

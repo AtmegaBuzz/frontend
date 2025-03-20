@@ -17,7 +17,7 @@ const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const { toast } = useToast();
 
-  const [token, setToken] = useAtom(authTokenAtom);
+  const [, setToken] = useAtom(authTokenAtom);
 
   const { connected, signMessage, account } = useWallet();
 

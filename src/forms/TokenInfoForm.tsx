@@ -1,7 +1,7 @@
 import ImageUpload from "@/components/ImageUpload";
 import { useToast } from "@/hooks/toast";
 import { TokenData } from "@/interfaces";
-import React, { useRef, useState } from "react";
+import React, { useRef } from "react";
 
 
 interface TokenInfoFormProps {
