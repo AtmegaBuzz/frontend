@@ -45,7 +45,6 @@ const ListTokenPage = ({
   const [formStep, setFormStep] = useState(1);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [customImage, setCustomImage] = useState<File | null>(null);
-  const [customImagePreview, setCustomImagePreview] = useState<string | null>(null);
   const [authToken,] = useAtom(authTokenAtom);
   const { toast } = useToast();
 
@@ -99,20 +98,6 @@ const ListTokenPage = ({
   };
 
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      setCustomImage(file);
-
-      // Create preview
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setCustomImagePreview(reader.result as string);
-      };
-      reader.readAsDataURL(file);
-    }
-  };
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
@@ -120,26 +105,24 @@ const ListTokenPage = ({
     // Pass token data up to parent
     updateTokenData(tokenData);
 
-    // let uploadFileResp = await uploadFile(authToken!, customImage!, "tokens");
+    let uploadFileResp = await uploadFile(authToken!, customImage!, "tokens");
 
-    // if (uploadFileResp.statusCode !== 201) {
-    //   toast({
-    //     type: "danger",
-    //     message: uploadFileResp.message,
-    //     duration: 3000
-    //   });
-    //   return;
-    // }
+    if (uploadFileResp.statusCode !== 201) {
+      toast({
+        type: "danger",
+        message: uploadFileResp.message,
+        duration: 3000
+      });
+      return;
+    }
 
-    // setTokenData((prevState) => ({
-    //   ...prevState,
-    //   tokenImageUrl: uploadFileResp.message
-    // }));
+    setTokenData((prevState) => ({
+      ...prevState,
+      tokenImageUrl: uploadFileResp.message
+    }));
 
-    // let { message, statusCode } = await createToken(authToken!, tokenData);
-    let {message, statusCode} = {message: 1, statusCode: 201};
-
-    setIsSubmitting(false);
+    let { message, statusCode } = await createToken(authToken!, tokenData);
+    // let {message, statusCode} = {message: 1, statusCode: 201};
 
     if (statusCode === 201) {
       
@@ -154,11 +137,12 @@ const ListTokenPage = ({
 
       toast({
         type: "danger",
-        message: message,
+        message: message.toString(),
         duration: 3000
       });
-    
     }
+
+    setIsSubmitting(false);
   };
 
   const nextStep = () => {
@@ -242,11 +226,7 @@ const ListTokenPage = ({
             {formStep === 1 && (
               <TokenInfoForm
                 tokenData={tokenData}
-                customImage={customImage}
-                customImagePreview={customImagePreview}
-                setCustomImage={setCustomImage}
-                setCustomImagePreview={setCustomImagePreview}
-                handleFileChange={handleFileChange}
+                onFileChange={setCustomImage}
                 handleInputChange={handleInputChange}
                 nextStep={nextStep}
               />

@@ -1,5 +1,10 @@
-import { getAgentTemplates } from "@/apis/create-token-form";
+import { addTokenCharacter, addTokenPersonality, getAgentTemplates } from "@/apis/create-token-form";
+import { uploadFile } from "@/apis/file-upload";
 import { authTokenAtom } from "@/atoms/global.atom";
+import FolderUpload from "@/components/FolderUpload";
+import ImageUpload from "@/components/ImageUpload";
+import IPFSFolderUploadComponent from "@/components/IPFSFolderUploadComponent";
+import { useToast } from "@/hooks/toast";
 import { AgentTemplate } from "@/interfaces";
 import { useAtom } from "jotai";
 import { useEffect, useState } from "react";
@@ -39,14 +44,13 @@ const CharacterCreationPage = ({
   const tokenData = location.state?.tokenData ||
     initialTokenData || { name: "", symbol: "" };
 
-  const [agentTemplate, setAgentTemplates] = useState<AgentTemplate[]>([]);
+  const [agentTemplates, setAgentTemplates] = useState<AgentTemplate[]>([]);
 
   const [characterType, setCharacterType] = useState<CharacterType>("vtuber");
-  const [selectedTemplate, setSelectedTemplate] = useState<number | null>(1);
+  const [selectedTemplate, setSelectedTemplate] = useState<number>(1);
   const [customImage, setCustomImage] = useState<File | null>(null);
-  const [customImagePreview, setCustomImagePreview] = useState<string | null>(
-    null
-  );
+
+  const { toast } = useToast();
 
   const [authToken,] = useAtom(authTokenAtom);
 
@@ -58,36 +62,104 @@ const CharacterCreationPage = ({
   const [personalityType, setPersonalityType] =
     useState<PersonalityType>("friendly");
   const [customPersonality, setCustomPersonality] = useState("");
+  const [agentName, setAgentName] = useState("");
+  const [agentBio, setAgentBio] = useState("");
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [currentStep, setCurrentStep] = useState(1);
+  const [agentIpfsUrl, setAgentIpfsUrl] = useState("");
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      setCustomImage(file);
+  const [pinataJwt, setPinataJwt] = useState("");
+  const [agentPfp, setAgentPfp] = useState("")
 
-      // Create preview
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setCustomImagePreview(reader.result as string);
-      };
-      reader.readAsDataURL(file);
-    }
-  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
 
-    // Simulate form submission
-    setTimeout(() => {
+    let agentImageUrl = "";
+    let agentIpfsURL = "";
+
+    if (characterType === "vtuber") {
+      const selectedAgentTemplate = agentTemplates.filter(agentTemplate => agentTemplate.id === selectedTemplate);
+      agentImageUrl = selectedAgentTemplate[0].agentImageUrl;
+      agentIpfsURL = selectedAgentTemplate[0].agentIpfsUrl
+    } else {
+      agentImageUrl = agentPfp;
+      agentIpfsURL = agentIpfsUrl;
+    }
+
+
+
+    const { message, statusCode } = await addTokenCharacter(authToken!, location.state.id, agentImageUrl, agentName, agentIpfsURL);
+
+    if (statusCode !== 201 && message !== "Agent info already exists") {
+      toast({
+        type: "danger",
+        message: message,
+        duration: 3000
+      });
       setIsSubmitting(false);
-      navigate("/dashboard");
-    }, 1500);
+      return;
+    }
+
+    const resp = await addTokenPersonality(authToken!, location.state.id, voiceType, [personalityType]);
+
+    if (resp.statusCode !== 201) {
+      toast({
+        type: "danger",
+        message: resp.message,
+        duration: 3000
+      });
+      setIsSubmitting(false);
+      return;
+    } else {
+      toast({
+        type: "success",
+        message: "You Agent has been created successfully!",
+        duration: 3000
+      });
+    }
+
+    setIsSubmitting(false);
+    navigate("/dashboard");
   };
 
-  const nextStep = () => {
+  const onIpfsUpload = (data: any) => {
+    setAgentIpfsUrl(`https://ipfs.io/ipfs/${data.IpfsHash}`);
+  }
+
+  const nextStep = async () => {
+
+    if (characterType === "custom") {
+      localStorage.setItem("pinataJWT", pinataJwt);
+
+      const ipfsResponse = await fetch(agentIpfsUrl);
+
+      if (ipfsResponse.status !== 200) {
+        toast({
+          type: "danger",
+          message: "Live2d Model didn't uploaded to IPFS, Try Again!",
+          duration: 3000
+        });
+        return;
+      }
+
+      const {message, statusCode} = await uploadFile(authToken!, customImage!, "agent-pfp")
+
+      if (statusCode !== 201) {
+        toast({
+          type: "danger",
+          message: message,
+          duration: 3000
+        });
+        return;
+      }
+
+      setAgentPfp(message);
+
+    }
+
     setCurrentStep((prev) => prev + 1);
   };
 
@@ -106,6 +178,17 @@ const CharacterCreationPage = ({
     getAgentTemplateData();
 
   }, [])
+
+
+  // Get Pinata Jwt auth token
+  useEffect(()=> {
+    const pinataJWT = localStorage.getItem("pinataJWT");
+
+    if (pinataJWT !== null) {
+      setPinataJwt(pinataJWT);
+    }
+    
+  },[])
 
   return (
     <section className="bg-blue-dark bg-pattern pt-24 pb-20">
@@ -167,13 +250,13 @@ const CharacterCreationPage = ({
                   <div>
                     <h3>Select Template</h3>
                     <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mb-8">
-                      {agentTemplate.map((template) => (
+                      {agentTemplates.map((template) => (
                         <div
                           key={template.id}
                           onClick={() => setSelectedTemplate(template.id)}
                           className={`border-4 rounded-lg p-4 flex flex-col h-full cursor-pointer transition-all duration-300 ${selectedTemplate === template.id
-                              ? "border-primary shadow-md transform -translate-y-1 bg-primary/5"
-                              : "border-gray-200 hover:border-primary/40"
+                            ? "border-primary shadow-md transform -translate-y-1 bg-primary/5"
+                            : "border-gray-200 hover:border-primary/40"
                             }`}
                         >
                           <div className="flex-grow h-4/5 overflow-hidden mb-2">
@@ -200,70 +283,46 @@ const CharacterCreationPage = ({
                       character and minimal background.
                     </p>
 
-                    <div className="border-4 border-dashed border-gray-200 rounded-xl p-6 text-center mb-5 hover:border-primary/40 transition-colors">
-                      {customImagePreview ? (
-                        <div>
-                          <img
-                            src={customImagePreview}
-                            alt="Preview"
-                            className="max-w-[200px] max-h-[200px] mb-2 mx-auto rounded-lg border-2 border-gray-100"
-                          />
-                          <p className="text-gray-700">{customImage?.name}</p>
-                          <button
-                            type="button"
-                            onClick={() => {
-                              setCustomImage(null);
-                              setCustomImagePreview(null);
-                            }}
-                            className="mt-2 px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors text-sm"
-                          >
-                            Remove Image
-                          </button>
-                        </div>
-                      ) : (
-                        <div>
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            className="h-16 w-16 text-gray-300 mx-auto mb-4"
-                            fill="none"
-                            viewBox="0 0 24 24"
-                            stroke="currentColor"
-                          >
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              strokeWidth={2}
-                              d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
-                            />
-                          </svg>
-                          <p className="text-gray-500 mb-4">
-                            Drag & drop your image here, or click to browse
-                          </p>
-                          <input
-                            type="file"
-                            accept="image/*"
-                            onChange={handleFileChange}
-                            className="hidden"
-                            id="image-upload"
-                          />
-                          <label htmlFor="image-upload">
-                            <button
-                              type="button"
-                              onClick={() =>
-                                document.getElementById("image-upload")?.click()
-                              }
-                              className="bg-primary text-white px-5 py-3 rounded-lg font-bold hover:bg-primary/90 transition-colors"
-                            >
-                              Upload Image
-                            </button>
-                          </label>
-                        </div>
-                      )}
+
+                    {/* Pinata API Key */}
+
+                    <div className="my-5">
+                      <label htmlFor="symbol" className="block mb-2 font-bold">
+                        Pinata JWT Token <span className="text-red-500">*</span>
+                      </label>
+                      <input
+                        type="text"
+                        id="symbol"
+                        name="symbol"
+                        value={pinataJwt}
+                        onChange={(e) => setPinataJwt(e.target.value)}
+                        required
+                        className="w-full p-3 rounded-lg border-2 border-gray-300 text-base"
+                        placeholder="eyJhbGciOiJIUzI1NiIs...."
+                      />
                     </div>
+
+                    {/* Agent PFP */}
+
+                    <div className="my-5">
+                      <label htmlFor="image-upload" className="block mb-2 font-bold">
+                        Agent PFP <span className="text-red-500">*</span>
+                      </label>
+                      <ImageUpload onImageSelect={setCustomImage} />
+                    </div>
+
+                    <div className="mb-10">
+                      <label htmlFor="folder-upload" className="block mb-2 font-bold">
+                        Live2d Model Folder <span className="text-red-500">*</span>
+                      </label>
+                      {/* <FolderUpload /> */}
+                      <IPFSFolderUploadComponent onIPFSUpload={onIpfsUpload} pinataJWT={pinataJwt} />
+                    </div>
+
                   </div>
                 )}
 
-                <div className="flex justify-end mt-8">
+                <div className="flex justify-end my-5">
                   <button
                     type="button"
                     onClick={nextStep}
@@ -314,6 +373,29 @@ const CharacterCreationPage = ({
                       </p>
                     </div>
                   </div>
+                </div>
+
+                <div className="mb-6">
+                  <label className="block mb-2 font-bold">Agent Name</label>
+                  <input
+                    type="text"
+                    value={agentName}
+                    onChange={(e) => setAgentName(e.target.value)}
+                    required
+                    className="w-full p-3 rounded-lg border-2 border-gray-300 text-base"
+                    placeholder="Degen Ren"
+                  />
+                </div>
+
+                <div className="mb-6">
+                  <label className="block mb-2 font-bold">Agent Bio</label>
+                  <textarea
+                    value={agentBio}
+                    onChange={(e) => setAgentBio(e.target.value)}
+                    required
+                    className="w-full p-3 rounded-lg border-2 border-gray-300 text-base"
+                    placeholder="This bio will be used for personality and the way the agent talk | eg: Degen Ren is a bold and confident AI agent who speaks about X token and roasts of other tokens."
+                  />
                 </div>
 
                 <div className="mb-6">

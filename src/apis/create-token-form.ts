@@ -60,9 +60,103 @@ export async function getAgentTemplates(authToken: string): Promise<AgentTemplat
         const agentTemplates: AgentTemplate[] = response.data;
 
         return agentTemplates;
-        
+
     } catch {
         return [];
+    }
+
+}
+
+export async function addTokenCharacter(authToken: string, aiTokenId: number, agentImageUrl: string, agentName: string, agentIpfsUrl: string) {
+
+    try {
+
+        const response = await axios.post(`${import.meta.env.VITE_API_URL}/agent/add-token-character`,
+            {
+                aiTokenId,
+                agentImageUrl,
+                agentName,
+                agentIpfsUrl
+                
+            },
+            {
+                headers: {
+                    Authorization: `Bearer ${authToken}`
+                }
+            }
+        );
+
+        if (response.status === 201) {
+            return {
+                message: aiTokenId,
+                errorType: null,
+                statusCode: response.status
+            }
+        } else {
+            return {
+                message: "something went wrong!",
+                errorType: "danger",
+                statusCode: response.status
+            }
+        }
+
+    } catch (error) {
+
+        if (axios.isAxiosError(error) && error.response) {
+            const { message, error: errType, statusCode } = error.response.data;
+            console.error(`Error ${statusCode}: ${message} (${errType})`);
+            return { message, error: errType, statusCode }
+        } else {
+            console.error("Unexpected error:", error);
+        }
+        return { message: 'Something went wrong!', error: "danger", statusCode: 404 };
+    }
+
+}
+
+
+
+export async function addTokenPersonality(authToken: string, aiTokenId: number, voiceType: string, personalityType: string[]) {
+
+    try {
+
+        const response = await axios.post(`${import.meta.env.VITE_API_URL}/agent/add-token-personality`,
+            {
+                aiTokenId,
+                voiceType,
+                personalityType
+            },
+            {
+                headers: {
+                    Authorization: `Bearer ${authToken}`
+                }
+            }
+        );
+
+        if (response.status === 201) {
+            return {
+                message: aiTokenId,
+                errorType: null,
+                statusCode: response.status
+            }
+        } else {
+            return {
+                message: "something went wrong!",
+                errorType: "danger",
+                statusCode: response.status
+            }
+        }
+
+    } catch (error) {
+
+        if (axios.isAxiosError(error) && error.response) {
+            const { message, error: errType, statusCode } = error.response.data;
+            console.error(`Error ${statusCode}: ${message} (${errType})`);
+            return { message, error: errType, statusCode }
+        } else {
+            console.error("Unexpected error:", error);
+        }
+        return { message: 'Something went wrong!', error: "danger", statusCode: 404 };
     }
 
 }
