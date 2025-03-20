@@ -10,6 +10,13 @@ import f1 from '@/assets/1f.png'
 import f2 from '@/assets/2f.png'
 import f3 from '@/assets/3f.png'
 import f4 from '@/assets/f4.png'
+import { TokensData } from '@/interfaces'
+import { getTokens } from '@/apis/token'
+
+
+function randint(min: number, max: number) {
+  return Math.floor(Math.random() * (max - min + 1)) + min;
+}
 
 interface StreamInfo {
   id: string
@@ -23,7 +30,7 @@ interface StreamInfo {
 }
 
 const ExplorePage = () => {
-  const [streams, setStreams] = useState<StreamInfo[]>([])
+  const [streams, setStreams] = useState<TokensData[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [filter, setFilter] = useState('all')
 
@@ -105,21 +112,36 @@ const ExplorePage = () => {
         trending: true
       }
     ]
-    
-    setStreams(mockStreams)
-    setIsLoading(false)
+
+    const fetchStreams = async () => {
+      const { message, statusCode } = await getTokens("", "", 1, 9);
+
+      if (statusCode !== 200) {
+        setStreams([]);
+      } else {
+        setStreams(message as TokensData[]);
+      }
+
+    }
+
+
+
+    fetchStreams();
+    setIsLoading(false);
   }, [])
 
-  const filteredStreams = filter === 'all' 
-    ? streams 
-    : filter === 'live' 
-      ? streams.filter(stream => stream.isLive)
-      : filter === 'trending'
-        ? streams.filter(stream => stream.trending)
-        : streams.filter(stream => stream.category === filter)
+  const filteredStreams = streams;
+
+  // const filteredStreams = filter === 'all' 
+  //   ? streams 
+  //   : filter === 'live' 
+  //     ? streams.filter(stream => stream.isLive)
+  //     : filter === 'trending'
+  //       ? streams.filter(stream => stream.trending)
+  //       : streams.filter(stream => stream.category === filter)
 
   const getFilterIcon = (filterName: string) => {
-    switch(filterName) {
+    switch (filterName) {
       case 'all': return <Sparkles size={18} />;
       case 'live': return <Tv size={18} />;
       case 'trending': return <TrendingUp size={18} />;
@@ -144,7 +166,7 @@ const ExplorePage = () => {
             Explore Live Memecoins
           </h1>
         </div>
-        
+
         {/* Filter buttons */}
         <div className="flex justify-center flex-wrap gap-3 mb-8 relative">
           {[
@@ -155,14 +177,14 @@ const ExplorePage = () => {
             { name: 'defi', label: 'DeFi' },
             { name: 'gaming', label: 'Gaming' }
           ].map(filterOption => (
-            <button 
+            <button
               key={filterOption.name}
-              onClick={() => setFilter(filterOption.name)} 
+              onClick={() => setFilter(filterOption.name)}
               className={`
                 flex items-center gap-2 px-4 py-2 rounded-lg border-2 
                 transition-all duration-200 font-bold text-sm
-                ${filter === filterOption.name 
-                  ? 'bg-primary text-white border-black' 
+                ${filter === filterOption.name
+                  ? 'bg-primary text-white border-black'
                   : 'bg-white/90 text-black border-gray-300 hover:border-black'
                 }
               `}
@@ -172,7 +194,7 @@ const ExplorePage = () => {
             </button>
           ))}
         </div>
-        
+
         {isLoading ? (
           <div className="text-center p-12 bg-white/80 backdrop-blur-sm rounded-xl border-4 border-black">
             <div className="animate-pulse">
@@ -193,34 +215,35 @@ const ExplorePage = () => {
                   shadow-[-6px_6px_0_0_#000] hover:shadow-[-10px_10px_0_0_#000] 
                   hover:-translate-y-2 hover:-translate-x-2 group-hover:bg-[#FCFCE6]">
                   <div className="relative">
-                    <img 
-                      src={stream.thumbnail} 
-                      alt={stream.tokenName} 
-                      className="w-full h-56 object-cover transform group-hover:scale-105 transition-transform duration-500" 
+                    <img
+                      src={stream.tokenImageUrl}
+                      alt={stream.tokenName}
+                      className="w-full h-56 object-cover transform group-hover:scale-105 transition-transform duration-500"
                     />
-                    {stream.isLive && (
-                      <div className="absolute top-3 left-3 bg-red-500 px-2 py-1 rounded-md text-white text-xs font-bold border-2 border-black shadow-lg flex items-center gap-1">
-                        <span className="w-1.5 h-1.5 bg-white rounded-full animate-pulse"></span>
-                        LIVE
-                      </div>
-                    )}
-                    {stream.trending && (
+                    {/* {stream.isLive && ( */}
+                    <div className="absolute top-3 left-3 bg-red-500 px-2 py-1 rounded-md text-white text-xs font-bold border-2 border-black shadow-lg flex items-center gap-1">
+                      <span className="w-1.5 h-1.5 bg-white rounded-full animate-pulse"></span>
+                      LIVE
+                    </div>
+                    {/* )} */}
+                    {/* {stream.trending && (
                       <div className="absolute top-3 left-3 ml-16 bg-primary px-2 py-1 rounded-md text-white text-xs font-bold border-2 border-black shadow-sm flex items-center gap-1">
                         <TrendingUp size={12} />
                         TRENDING
                       </div>
-                    )}
+                    )} */}
                     <div className="absolute top-3 right-3 bg-black px-2 py-1 rounded-md text-white text-xs font-bold border-2 border-white backdrop-blur-sm">
-                      {stream.viewerCount.toLocaleString()} viewers
+                      {randint(1,10).toLocaleString()} viewers
                     </div>
                   </div>
                   <div className="p-4 border-t-4 border-black bg-[#FCFCE6] group-hover:bg-white transition-colors duration-300">
                     <h3 className="text-xl font-bold mb-1 font-right-grotesk group-hover:text-primary transition-colors duration-200">
-                      {stream.tokenName}
+                      ${stream.tokenName}
                     </h3>
-                    <p className="text-gray-600 flex items-center gap-2 font-medium">
-                      <span className={`w-2 h-2 rounded-full ${stream.isLive ? 'bg-red-500' : 'bg-gray-300'}`}></span>
-                      {stream.characterName}
+                    <p data-title={stream.tokenDescription} className="text-gray-600 flex items-center gap-2 font-medium">
+                      {/* <span className={`w-2 h-2 rounded-full ${stream.isLive ? 'bg-red-500' : 'bg-gray-300'}`}></span> */}
+                      <span className={`w-2 h-2 rounded-full bg-red-500`}></span>
+                      {stream.tokenDescription.slice(0,31)}...
                     </p>
                   </div>
                 </div>

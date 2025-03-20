@@ -42,7 +42,7 @@ const DashboardPage = () => {
       setIsLoading(true);
 
 
-      const { message, statusCode } = await getTokens(account?.address.toString(), "", 1, 100);
+      const { message, statusCode } = await getTokens(account?.address.toString()!, "", 1, 100);
 
       if (statusCode !== 200) {
         toast({

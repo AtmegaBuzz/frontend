@@ -2,7 +2,7 @@ import axios from "axios";
 
 
 
-export async function getTokens(filterByWalletAddress: string = "", filterByTokenName: string = "", page: number, pageSize: number) {
+export async function getTokens(filterByWalletAddress: string, filterByTokenName: string, page: number, pageSize: number) {
 
     try {
 
