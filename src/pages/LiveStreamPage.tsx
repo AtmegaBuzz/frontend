@@ -1,6 +1,9 @@
 import { useState, useEffect, useRef } from 'react'
-import { useParams } from 'react-router-dom'
+import { useParams, useNavigate } from 'react-router-dom'
 import { Heart, MessageSquare, Share2, Users, ExternalLink, Info, Shield, Star } from 'lucide-react'
+import { AIToken } from '@/interfaces'
+import { getToken } from '@/apis/token'
+import { useToast } from '@/hooks/toast'
 
 interface Message {
   id: string
@@ -11,58 +14,21 @@ interface Message {
   isCurrentUser?: boolean
 }
 
-interface TokenCreator {
-  username: string
-  profilePic: string
-  verified: boolean
-  followers: number
-  joined: string
-}
-
-interface Agent {
-  id: string
-  name: string
-  image: string
-  ipfsLink: string
-  description: string
-  traits: Record<string, string>
-}
-
-interface TokenInfo {
-  id: string
-  name: string
-  symbol: string
-  description: string
-  characterName: string
-  price: number
-  marketCap: number
-  holders: number
-  contract: string
-  chain: string
-  website: string
-  twitter: string
-  telegram: string
-  creator: TokenCreator
-  agent: Agent
-  launchDate: string
-  allTimeHigh: number
-  allTimeHighDate: string
-}
-
 const LiveStreamPage = () => {
   const { tokenId } = useParams<{ tokenId: string }>()
-  // const navigate = useNavigate()
+  const navigate = useNavigate()
   const [messages, setMessages] = useState<Message[]>([])
   const [newMessage, setNewMessage] = useState('')
-  const [tokenInfo, setTokenInfo] = useState<TokenInfo | null>(null)
+  const [tokenInfo, setTokenInfo] = useState<AIToken | null>(null)
   const [viewerCount, setViewerCount] = useState(0)
   const [isLoading, setIsLoading] = useState(true)
   const [showEvent, setShowEvent] = useState(false)
   const [showAgentModal, setShowAgentModal] = useState(false)
-  // const messagesEndRef = useRef<HTMLDivElement>(null)
+  const messagesEndRef = useRef<HTMLDivElement>(null)
   const [isLive, setIsLive] = useState(true)
   const [likeCount, setLikeCount] = useState(0)
   const [hasLiked, setHasLiked] = useState(false)
+  const { toast } = useToast();
 
   // Simulate random viewer count fluctuations
   useEffect(() => {
@@ -87,46 +53,39 @@ const LiveStreamPage = () => {
     const fetchTokenInfo = async () => {
       setIsLoading(true)
 
-      // Mock data based on tokenId
-      const mockTokenInfo: TokenInfo = {
-        id: tokenId || 'unknown',
-        name: tokenId === 'pepe-coin' ? 'Pepe Coin' : 'Unknown Token',
-        symbol: tokenId === 'pepe-coin' ? 'PEPE' : 'UNKNOWN',
-        description: 'The original meme cryptocurrency inspired by the Pepe the Frog meme.',
-        characterName: 'Pepe the Frog',
+
+      const { message, statusCode } = await getToken(parseInt(tokenId!))
+
+      if (statusCode !== 200) {
+        toast({
+          type: "danger",
+          message: "Couldn't load token data",
+          duration: 3000
+        });
+        return;
+      }
+
+      // Mock data based on tokenId, following database schema
+      const mockTokenInfo: AIToken = {
+
+        ...message as AIToken,
+
+
+        // Market data (not in schema but needed for UI)
         price: 0.0000123,
         marketCap: 123456789,
         holders: 54321,
-        contract: '0x1234567890abcdef1234567890abcdef12345678',
         chain: 'Ethereum',
-        website: 'https://pepecoin.io',
-        twitter: '@PepeCoinOfficial',
-        telegram: 't.me/pepecoin',
         launchDate: '2023-04-15',
         allTimeHigh: 0.0000189,
         allTimeHighDate: '2023-07-12',
-        // Added token creator information
-        creator: {
-          username: 'CryptoMemeLord',
-          profilePic: '/api/placeholder/80/80',
-          verified: true,
-          followers: 12500,
-          joined: '2021-03-15'
-        },
-        // Added agent information with IPFS link
-        agent: {
-          id: 'pepe-agent-001',
-          name: 'Pepe AI',
-          image: '/api/placeholder/150/150',
-          ipfsLink: 'ipfs://Qm123456789abcdefghijklmnopqrstuvwxyz123456',
-          description: 'An AI-powered avatar representing Pepe Coin. Trained on meme culture and crypto knowledge to assist the community.',
-          traits: {
-            Personality: 'Humorous',
-            Knowledge: 'Cryptocurrency',
-            Specialty: 'Memes',
-            Language: 'English',
-            Training: 'Advanced'
-          }
+
+        // Stream details
+        streamDetails: {
+          id: 1,
+          youtubeChannelId: 'UCetf834RebcJNy7nLmtQpnw',
+          twitchChannelId: 'pepecoin_official',
+          aiTokenId: 1
         }
       }
 
@@ -138,7 +97,7 @@ const LiveStreamPage = () => {
         const systemMessage: Message = {
           id: 'system-welcome',
           user: 'System',
-          text: `Welcome to the ${mockTokenInfo.name} live stream! Chat with other viewers and interact with ${mockTokenInfo.characterName}.`,
+          text: `Welcome to the ${mockTokenInfo.tokenName} live stream! Chat with other viewers and interact with ${mockTokenInfo.agentDisplay?.agentName || 'the AI agent'}.`,
           timestamp: new Date(),
           isAI: false
         }
@@ -146,8 +105,8 @@ const LiveStreamPage = () => {
         // Add initial AI greeting
         const initialMessage: Message = {
           id: 'initial',
-          user: mockTokenInfo.characterName,
-          text: `Hey everyone! It's ${mockTokenInfo.characterName} here, the face of ${mockTokenInfo.name}! Ask me anything about the token or just chat with me. I'm feeling ribbit-ing today! 🐸`,
+          user: mockTokenInfo.agentDisplay?.agentName || 'AI Agent',
+          text: `Hey everyone! It's ${mockTokenInfo.agentDisplay?.agentName || 'your AI agent'} here, the face of ${mockTokenInfo.tokenName}! Ask me anything about the token or just chat with me. I'm feeling ribbit-ing today! 🐸`,
           timestamp: new Date(),
           isAI: true
         }
@@ -162,24 +121,24 @@ const LiveStreamPage = () => {
   // Improved auto-scroll behavior that only scrolls when user is already at the bottom
   const [shouldAutoScroll, setShouldAutoScroll] = useState(true)
   const chatContainerRef = useRef<HTMLDivElement>(null)
-  
+
   // Check if user is near bottom of chat
   const isNearBottom = () => {
     if (!chatContainerRef.current) return false
-    
+
     const { scrollTop, scrollHeight, clientHeight } = chatContainerRef.current
     // Consider "near bottom" if within 100px of the bottom
     const scrollThreshold = 100
     return scrollHeight - scrollTop - clientHeight < scrollThreshold
   }
-  
+
   // Handle scroll events to determine if auto-scroll should happen
   const handleScroll = () => {
     if (chatContainerRef.current) {
       setShouldAutoScroll(isNearBottom())
     }
   }
-  
+
   // Auto-scroll to bottom of chat only when appropriate
   useEffect(() => {
     if (shouldAutoScroll && chatContainerRef.current) {
@@ -237,7 +196,7 @@ const LiveStreamPage = () => {
 
         const aiMessage: Message = {
           id: `ai-${Date.now()}`,
-          user: tokenInfo.characterName,
+          user: tokenInfo.agentDisplay?.agentName || 'AI Agent',
           text: randomResponse,
           timestamp: new Date(),
           isAI: true
@@ -307,21 +266,22 @@ const LiveStreamPage = () => {
 
     // Simulate AI response after a short delay if message mentions the character or token
     const lowerCaseMessage = newMessage.toLowerCase()
-    const aiShouldRespond = lowerCaseMessage.includes(tokenInfo.name.toLowerCase()) ||
+    const aiShouldRespond = lowerCaseMessage.includes(tokenInfo.tokenName.toLowerCase()) ||
       lowerCaseMessage.includes(tokenInfo.symbol.toLowerCase()) ||
-      lowerCaseMessage.includes(tokenInfo.characterName.toLowerCase()) ||
+      (tokenInfo.agentDisplay?.agentName && lowerCaseMessage.includes(tokenInfo.agentDisplay.agentName.toLowerCase())) ||
       lowerCaseMessage.includes('?')
 
     if (aiShouldRespond) {
       setTimeout(() => {
         let aiResponse = ''
+        const agentName = tokenInfo.agentDisplay?.agentName || 'AI Agent'
 
         // Generate contextual responses based on user input
         if (lowerCaseMessage.includes('price') || lowerCaseMessage.includes('worth')) {
-          aiResponse = `${tokenInfo.name} is currently trading at $${tokenInfo.price.toFixed(8)}. We've seen some nice growth lately! 📈`
+          aiResponse = `${tokenInfo.tokenName} is currently trading at ${tokenInfo.price?.toFixed(8)}. We've seen some nice growth lately! 📈`
         }
         else if (lowerCaseMessage.includes('buy') || lowerCaseMessage.includes('purchase')) {
-          aiResponse = `Want to buy some ${tokenInfo.symbol}? You can get it on major DEXes like Uniswap or PancakeSwap. Make sure you're using the correct contract address: ${tokenInfo.contract.slice(0, 6)}...${tokenInfo.contract.slice(-4)}`
+          aiResponse = `Want to buy some ${tokenInfo.symbol}? You can get it on major DEXes like Uniswap or PancakeSwap. Make sure you're using the correct contract address: ${tokenInfo.contractAddress?.slice(0, 6)}...${tokenInfo.contractAddress?.slice(-4)}`
         }
         else if (lowerCaseMessage.includes('roadmap') || lowerCaseMessage.includes('future')) {
           aiResponse = `Our roadmap includes exchange listings, partnerships, and new utilities. The team is working hard behind the scenes! Stay tuned for big announcements soon! 🚀`
@@ -333,10 +293,10 @@ const LiveStreamPage = () => {
           aiResponse = `Hey there! Great to see you in the stream. How's your day going? Enjoying the ${tokenInfo.symbol} journey?`
         }
         else if (lowerCaseMessage.includes('creator') || lowerCaseMessage.includes('who made')) {
-          aiResponse = `${tokenInfo.name} was created by ${tokenInfo.creator.username}, who's been in the crypto space since ${tokenInfo.creator.joined.split('-')[0]}. They've built a great community around this project!`
+          aiResponse = `${tokenInfo.tokenName} was created by ${tokenInfo.user.username}, who's been in the crypto space since ${tokenInfo.user.createdAt.getFullYear()}. They've built a great community around this project!`
         }
         else if (lowerCaseMessage.includes('agent') || lowerCaseMessage.includes('ai')) {
-          aiResponse = `I'm ${tokenInfo.agent.name}, the official AI representative for ${tokenInfo.name}. I was trained to help the community and spread the word about our amazing project!`
+          aiResponse = `I'm ${agentName}, the official AI representative for ${tokenInfo.tokenName}. I was trained to help the community and spread the word about our amazing project!`
         }
         else {
           // Default random response
@@ -345,7 +305,7 @@ const LiveStreamPage = () => {
 
         const aiMessage: Message = {
           id: `ai-${Date.now()}`,
-          user: tokenInfo.characterName,
+          user: tokenInfo.agentDisplay?.agentName || 'AI Agent',
           text: aiResponse,
           timestamp: new Date(),
           isAI: true
@@ -371,9 +331,9 @@ const LiveStreamPage = () => {
   }
 
   const handleRedirectToIPFS = () => {
-    if (tokenInfo?.agent.ipfsLink) {
+    if (tokenInfo?.agentDisplay?.agentIpfsUrl) {
       // In a real app, you would redirect to a gateway URL
-      window.open(`https://gateway.ipfs.io/ipfs/${tokenInfo.agent.ipfsLink.replace('ipfs://', '')}`, '_blank')
+      window.open(tokenInfo.agentDisplay.agentIpfsUrl, '_blank')
     }
     setShowAgentModal(false)
   }
@@ -402,13 +362,15 @@ const LiveStreamPage = () => {
                     <iframe
                       id="youtube-live"
                       className="w-full h-full pointer-events-none"
-                      src={`https://www.youtube.com/embed/live_stream?channel=UCetf834RebcJNy7nLmtQpnw&autoplay=1&controls=0`}
+                      src={`https://www.youtube.com/embed/live_stream?channel=${tokenInfo?.streamDetails?.youtubeChannelId || 'UCetf834RebcJNy7nLmtQpnw'}&autoplay=1&controls=0`}
                       allow="autoplay; encrypted-media"
                       onCanPlay={() => setIsLive(false)}
                     />
                   )
                   : (
-                    <h1>Error occurred</h1>
+                    <div className="h-[500px] w-full flex items-center justify-center text-white">
+                      <h1 className="text-xl bg-black/50 p-4 rounded-lg">Stream could not be loaded</h1>
+                    </div>
                   )
               }
             </div>
@@ -418,17 +380,15 @@ const LiveStreamPage = () => {
           <div className="absolute top-4 left-4 right-4 flex justify-between">
             {/* Creator info - NEW */}
             <div className="bg-black/70 backdrop-blur-sm px-3 py-1.5 rounded-full text-white text-sm flex items-center gap-2 border border-white/10">
-              <img 
-                src={tokenInfo?.creator.profilePic} 
-                alt={tokenInfo?.creator.username} 
-                className="w-6 h-6 rounded-full object-cover" 
+              <img
+                src={tokenInfo?.user.profile_pic || '/api/placeholder/24/24'}
+                alt={tokenInfo?.user.username}
+                className="w-6 h-6 rounded-full object-cover"
               />
-              <span>{tokenInfo?.creator.username}</span>
-              {tokenInfo?.creator.verified && (
-                <Shield size={14} className="text-blue-500" />
-              )}
+              <span>{tokenInfo?.user.username}</span>
+              <Shield size={14} className="text-blue-500" />
             </div>
-            
+
             {/* Viewer count */}
             <div className="bg-black/70 backdrop-blur-sm px-3 py-1.5 rounded-full text-white text-sm flex items-center gap-2 border border-white/10">
               <Users size={16} className="text-red-500" />
@@ -438,12 +398,11 @@ const LiveStreamPage = () => {
 
           {/* Stream actions */}
           <div className="absolute bottom-4 left-4 flex gap-2">
-            <button 
-              className={`p-2 rounded-full border border-white/10 transition-colors duration-200 flex items-center gap-2 ${
-                hasLiked 
-                  ? 'bg-red-500 text-white' 
-                  : 'bg-black/40 hover:bg-primary backdrop-blur-sm text-white'
-              }`}
+            <button
+              className={`p-2 rounded-full border border-white/10 transition-colors duration-200 flex items-center gap-2 ${hasLiked
+                ? 'bg-red-500 text-white'
+                : 'bg-black/40 hover:bg-primary backdrop-blur-sm text-white'
+                }`}
               onClick={handleLike}
             >
               <Heart size={22} className={hasLiked ? 'animate-pulse' : ''} />
@@ -464,91 +423,97 @@ const LiveStreamPage = () => {
         </div>
 
         {/* Token info card */}
-        <div className="bg-gray-800 rounded-lg p-5 mb-5 text-white">
-          <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-4">
-            <div className="flex-1">
-              <h2 className="mb-2 text-2xl font-bold flex items-center gap-2">
-                {tokenInfo?.name} ({tokenInfo?.symbol})
-                <span className="text-sm font-normal text-gray-400">
+        <div className="bg-gray-800 rounded-lg p-6 mb-5 text-white shadow-md">
+          <div className="flex flex-col gap-4">
+            {/* Token Header */}
+            <div className="mb-2">
+              <h2 className="text-2xl font-bold flex items-center flex-wrap gap-2">
+                {tokenInfo?.tokenName}
+                <span className="text-lg text-gray-300">({tokenInfo?.symbol})</span>
+                <span className="text-xs font-normal text-gray-400 ml-1 bg-gray-700 px-2 py-1 rounded-full">
                   Launched {new Date(tokenInfo?.launchDate || '').toLocaleDateString()}
                 </span>
               </h2>
-              <p className="mb-5 text-gray-300">{tokenInfo?.description}</p>
+              <p className="mt-2 text-gray-300">{tokenInfo?.tokenDescription}</p>
+            </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-5">
-                <div>
-                  <div className="text-gray-400 text-sm mb-1">Price</div>
-                  <div className="font-bold">${tokenInfo?.price.toFixed(8)}</div>
-                </div>
-                <div>
-                  <div className="text-gray-400 text-sm mb-1">Market Cap</div>
-                  <div className="font-bold">${tokenInfo?.marketCap.toLocaleString()}</div>
-                </div>
-                <div>
-                  <div className="text-gray-400 text-sm mb-1">Holders</div>
-                  <div className="font-bold">{tokenInfo?.holders.toLocaleString()}</div>
-                </div>
-                <div>
-                  <div className="text-gray-400 text-sm mb-1">Network</div>
-                  <div className="font-bold">{tokenInfo?.chain}</div>
+            {/* Token Metrics and Agent Card in a grid layout */}
+            <div className="grid grid-cols-1 lg:grid-cols-4 gap-5">
+              {/* First row of metrics - Takes 3/4 of the width */}
+              <div className="bg-gray-700/50 p-3 rounded-lg">
+                <div className="text-gray-400 text-sm">Price</div>
+                <div className="font-bold text-lg">${tokenInfo?.price!.toFixed(8)}</div>
+              </div>
+              <div className="bg-gray-700/50 p-3 rounded-lg">
+                <div className="text-gray-400 text-sm">Market Cap</div>
+                <div className="font-bold text-lg">${tokenInfo?.marketCap!.toLocaleString()}</div>
+              </div>
+              <div className="bg-gray-700/50 p-3 rounded-lg">
+                <div className="text-gray-400 text-sm">Holders</div>
+                <div className="font-bold text-lg">{tokenInfo?.holders!.toLocaleString()}</div>
+              </div>
+
+              {/* Agent card - Takes 1/4 of the width but spans 2 rows */}
+              <div
+                className="bg-gray-700 rounded-lg p-4 cursor-pointer hover:shadow-lg transition-all duration-300 border border-gray-600 hover:border-primary lg:row-span-2 flex flex-col justify-center"
+                onClick={handleAgentClick}
+              >
+                <div className="text-center">
+                  <img
+                    src={tokenInfo?.agentDisplay?.agentImageUrl}
+                    alt={tokenInfo?.agentDisplay?.agentName}
+                    className="w-24 h-24 mx-auto rounded-full object-cover border-2 border-primary shadow-md"
+                  />
+                  <h3 className="mt-3 font-bold text-lg flex items-center justify-center gap-1">
+                    {tokenInfo?.agentDisplay?.agentName}
+                    <Star size={16} className="text-yellow-400" />
+                  </h3>
+                  <p className="text-gray-300 text-sm mt-1">AI Representative</p>
+                  <div className="mt-3 text-xs text-gray-400 flex items-center justify-center bg-gray-800/50 p-2 rounded-md">
+                    <Info size={14} className="mr-1" /> Click to view details
+                  </div>
                 </div>
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-5">
-                <div>
-                  <div className="text-gray-400 text-sm mb-1">All-Time High</div>
-                  <div className="font-bold">${tokenInfo?.allTimeHigh.toFixed(8)}</div>
-                </div>
-                <div>
-                  <div className="text-gray-400 text-sm mb-1">ATH Date</div>
-                  <div className="font-bold">{new Date(tokenInfo?.allTimeHighDate || '').toLocaleDateString()}</div>
-                </div>
-                <div>
-                  <div className="text-gray-400 text-sm mb-1">Creator</div>
-                  <div className="font-bold">{tokenInfo?.creator.username}</div>
-                </div>
-                <div>
-                  <div className="text-gray-400 text-sm mb-1">Creator Followers</div>
-                  <div className="font-bold">{tokenInfo?.creator.followers.toLocaleString()}</div>
-                </div>
+              {/* Second row of metrics - Aligns under the first row */}
+              <div className="bg-gray-700/50 p-3 rounded-lg">
+                <div className="text-gray-400 text-sm">Token Supply</div>
+                <div className="font-bold text-lg">{tokenInfo?.supply.toLocaleString()}</div>
               </div>
-
-              <div className="flex flex-wrap gap-2">
-                <a href={tokenInfo?.website} target="_blank" rel="noopener noreferrer" className="bg-primary text-white px-4 py-2 rounded-full no-underline text-sm font-bold hover:bg-[#e42c7f] transition-colors duration-200">
-                  Website
-                </a>
-                <a href={`https://twitter.com/${tokenInfo?.twitter}`} target="_blank" rel="noopener noreferrer" className="bg-[#1da1f2] text-white px-4 py-2 rounded-full no-underline text-sm font-bold hover:opacity-90 transition-opacity duration-200">
-                  Twitter
-                </a>
-                <a href={`https://${tokenInfo?.telegram}`} target="_blank" rel="noopener noreferrer" className="bg-[#0088cc] text-white px-4 py-2 rounded-full no-underline text-sm font-bold hover:opacity-90 transition-opacity duration-200">
-                  Telegram
-                </a>
-                <a href={`https://etherscan.io/token/${tokenInfo?.contract}`} target="_blank" rel="noopener noreferrer" className="bg-[#3498db] text-white px-4 py-2 rounded-full no-underline text-sm font-bold hover:opacity-90 transition-opacity duration-200">
-                  Contract
-                </a>
+              <div className="bg-gray-700/50 p-3 rounded-lg">
+                <div className="text-gray-400 text-sm">ATH Date</div>
+                <div className="font-bold text-lg">{tokenInfo?.allTimeHighDate ? new Date(tokenInfo.allTimeHighDate).toLocaleDateString() : "N/A"}</div>
+              </div>
+              <div className="bg-gray-700/50 p-3 rounded-lg">
+                <div className="text-gray-400 text-sm">Creator</div>
+                <div className="font-bold text-lg">{tokenInfo?.user.username}</div>
               </div>
             </div>
 
-            {/* Agent card - NEW */}
-            <div 
-              className="bg-gray-700 rounded-lg p-4 w-full md:w-64 cursor-pointer hover:shadow-lg transition-all duration-300 border border-gray-600 hover:border-primary" 
-              onClick={handleAgentClick}
-            >
-              <div className="text-center">
-                <img 
-                  src={tokenInfo?.agent.image} 
-                  alt={tokenInfo?.agent.name} 
-                  className="w-20 h-20 mx-auto rounded-full object-cover border-2 border-primary" 
-                />
-                <h3 className="mt-2 font-bold text-lg flex items-center justify-center gap-1">
-                  {tokenInfo?.agent.name}
-                  <Star size={16} className="text-yellow-400" />
-                </h3>
-                <p className="text-gray-300 text-sm mt-1">AI Representative</p>
-                <div className="mt-3 text-xs text-gray-400 flex items-center justify-center">
-                  <Info size={14} className="mr-1" /> Click to view details
-                </div>
-              </div>
+            {/* Social links */}
+            <div className="flex flex-wrap gap-3 mt-4">
+              <a href={tokenInfo?.website} target="_blank" rel="noopener noreferrer" className="bg-primary text-white px-4 py-2 rounded-md no-underline text-sm font-medium hover:bg-[#e42c7f] transition-colors duration-200">
+                Website
+              </a>
+              <a href={`https://x.com/${tokenInfo?.twitter?.replace('@', '')}`} target="_blank" rel="noopener noreferrer" className="bg-[#1da1f2] text-white px-4 py-2 rounded-md no-underline text-sm font-medium hover:opacity-90 transition-opacity duration-200">
+                Twitter
+              </a>
+              <a href={`https://t.me/${tokenInfo?.telegram}`} target="_blank" rel="noopener noreferrer" className="bg-[#0088cc] text-white px-4 py-2 rounded-md no-underline text-sm font-medium hover:opacity-90 transition-opacity duration-200">
+                Telegram
+              </a>
+              {tokenInfo?.discord && (
+                <a href={`https://discord.gg/${tokenInfo.discord}`} target="_blank" rel="noopener noreferrer" className="bg-[#7289da] text-white px-4 py-2 rounded-md no-underline text-sm font-medium hover:opacity-90 transition-opacity duration-200">
+                  Discord
+                </a>
+              )}
+              {tokenInfo?.youtube && (
+                <a href={`https://youtube.com/@${tokenInfo.youtube}`} target="_blank" rel="noopener noreferrer" className="bg-[#ff0000] text-white px-4 py-2 rounded-md no-underline text-sm font-medium hover:opacity-90 transition-opacity duration-200">
+                  YouTube
+                </a>
+              )}
+              <a href={`https://explorer.aptoslabs.com/account/${tokenInfo?.contractAddress}`} target="_blank" rel="noopener noreferrer" className="bg-[#3498db] text-white px-4 py-2 rounded-md no-underline text-sm font-medium hover:opacity-90 transition-opacity duration-200">
+                Contract
+              </a>
             </div>
           </div>
         </div>
@@ -567,7 +532,7 @@ const LiveStreamPage = () => {
         </div>
 
         {/* Messages area */}
-        <div 
+        <div
           ref={chatContainerRef}
           className="flex-1 overflow-auto p-4 flex flex-col gap-3 bg-gray-900"
           onScroll={handleScroll}
@@ -630,23 +595,25 @@ const LiveStreamPage = () => {
           <div className="bg-gray-800 rounded-xl max-w-lg w-full max-h-[90vh] overflow-y-auto">
             <div className="p-6">
               <div className="flex justify-between items-start mb-4">
-                <h2 className="text-2xl text-white font-bold">{tokenInfo.agent.name}</h2>
-                <button 
+                <h2 className="text-2xl text-white font-bold">{tokenInfo.agentDisplay?.agentName}</h2>
+                <button
                   onClick={() => setShowAgentModal(false)}
                   className="text-gray-400 hover:text-white"
                 >
                   &times;
                 </button>
               </div>
-              
+
               <div className="flex flex-col sm:flex-row gap-4 mb-6">
-                <img 
-                  src={tokenInfo.agent.image} 
-                  alt={tokenInfo.agent.name} 
-                  className="w-32 h-32 rounded-lg object-cover border-2 border-primary" 
+                <img
+                  src={tokenInfo.agentDisplay?.agentImageUrl || '/api/placeholder/128/128'}
+                  alt={tokenInfo.agentDisplay?.agentName || 'AI Agent'}
+                  className="w-32 h-32 rounded-lg object-cover border-2 border-primary"
                 />
                 <div>
-                  <p className="text-gray-300 mb-4">{tokenInfo.agent.description}</p>
+                  <p className="text-gray-300 mb-4">
+                    An AI-powered agent representing {tokenInfo.tokenName}. Trained to assist the community with token information and engaging conversations.
+                  </p>
                   <button
                     onClick={handleRedirectToIPFS}
                     className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md transition-colors duration-200"
@@ -656,31 +623,35 @@ const LiveStreamPage = () => {
                   </button>
                 </div>
               </div>
-              
+
               <div className="border-t border-gray-700 pt-4">
                 <h3 className="text-white font-bold mb-3">Agent Traits</h3>
                 <div className="grid grid-cols-2 gap-3">
-                  {Object.entries(tokenInfo.agent.traits).map(([trait, value]) => (
+                  {tokenInfo.personalityType?.map((trait) => (
                     <div key={trait} className="bg-gray-700 p-3 rounded-md">
-                      <div className="text-gray-400 text-sm">{trait}</div>
-                      <div className="text-white font-medium">{value}</div>
+                      <div className="text-gray-400 text-sm">Personality</div>
+                      <div className="text-white font-medium">{trait}</div>
                     </div>
                   ))}
+                  {tokenInfo.voiceType && (
+                    <div className="bg-gray-700 p-3 rounded-md">
+                      <div className="text-gray-400 text-sm">Voice Type</div>
+                      <div className="text-white font-medium">{tokenInfo.voiceType}</div>
+                    </div>
+                  )}
                 </div>
               </div>
-              
+
               <div className="border-t border-gray-700 mt-6 pt-4">
                 <h3 className="text-white font-bold mb-3">Token Association</h3>
                 <p className="text-gray-300">
-                  Official AI agent for {tokenInfo.name} ({tokenInfo.symbol})
+                  Official AI agent for {tokenInfo.tokenName} ({tokenInfo.symbol})
                 </p>
                 <div className="flex items-center gap-2 mt-2 text-gray-400 text-sm">
                   <span>Created by</span>
                   <span className="flex items-center gap-1 text-white">
-                    {tokenInfo.creator.username}
-                    {tokenInfo.creator.verified && (
-                      <Shield size={12} className="text-blue-500" />
-                    )}
+                    {tokenInfo.user.username}
+                    <Shield size={12} className="text-blue-500" />
                   </span>
                 </div>
               </div>
