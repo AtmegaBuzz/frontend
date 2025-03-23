@@ -1,4 +1,3 @@
-import { AIToken } from "@/interfaces";
 import axios from "axios";
 
 

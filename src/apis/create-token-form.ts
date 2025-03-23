@@ -17,7 +17,9 @@ export async function createToken(authToken: string, tokenData: TokenData) {
                 "twitter": tokenData.twitter,
                 "telegram": tokenData.telegram,
                 "discord": tokenData.discord,
-                "youtube": tokenData.youtube
+                "youtube": tokenData.youtube,
+                "youtubeChannelId": tokenData.youtubeChannelId,
+                "twitchChannelId": tokenData.twitchChannelId
             },
             {
                 headers: {

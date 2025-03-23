@@ -79,14 +79,6 @@ const LiveStreamPage = () => {
         launchDate: '2023-04-15',
         allTimeHigh: 0.0000189,
         allTimeHighDate: '2023-07-12',
-
-        // Stream details
-        streamDetails: {
-          id: 1,
-          youtubeChannelId: 'UCetf834RebcJNy7nLmtQpnw',
-          twitchChannelId: 'pepecoin_official',
-          aiTokenId: 1
-        }
       }
 
       setTimeout(() => {
@@ -353,8 +345,8 @@ const LiveStreamPage = () => {
         {/* Stream player */}
         <div className="aspect-video bg-black rounded-lg overflow-hidden relative mb-5">
           {/* "Video" placeholder */}
-          <div className="w-full h-full flex flex-col items-center justify-center p-5 bg-[linear-gradient(45deg,#2b2b2b_25%,#222_25%,#222_50%,#2b2b2b_50%,#2b2b2b_75%,#222_75%,#222_100%)] bg-[length:10px_10px]">
-            <div className="relative w-full h-[500px] group">
+          <div className="w-full h-full flex flex-col items-center justify-center bg-[linear-gradient(45deg,#2b2b2b_25%,#222_25%,#222_50%,#2b2b2b_50%,#2b2b2b_75%,#222_75%,#222_100%)] bg-[length:10px_10px]">
+            <div className="relative w-full h-full group">
               {/* YouTube Embed */}
               {
                 isLive ?
@@ -362,7 +354,7 @@ const LiveStreamPage = () => {
                     <iframe
                       id="youtube-live"
                       className="w-full h-full pointer-events-none"
-                      src={`https://www.youtube.com/embed/live_stream?channel=${tokenInfo?.streamDetails?.youtubeChannelId || 'UCetf834RebcJNy7nLmtQpnw'}&autoplay=1&controls=0`}
+                      src={`https://www.youtube.com/embed/live_stream?channel=${tokenInfo?.youtubeChannelId}&autoplay=1&controls=0`}
                       allow="autoplay; encrypted-media"
                       onCanPlay={() => setIsLive(false)}
                     />

@@ -41,10 +41,13 @@ const ListTokenPage = ({
     twitter: existingTokenData?.twitter || "",
     telegram: existingTokenData?.telegram || "",
     discord: existingTokenData?.discord || "",
+    youtubeChannelId: existingTokenData?.youtubeChannelId || "", 
+    twitchChannelId: existingTokenData?.twitchChannelId || ""
   });
   const [formStep, setFormStep] = useState(1);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [customImage, setCustomImage] = useState<File | null>(null);
+  const [streamingPlatform, setStreamingPlatform] = useState<"youtube" | "twitch" | "tiktok">("youtube");
   const [authToken,] = useAtom(authTokenAtom);
   const { toast } = useToast();
 
@@ -241,6 +244,8 @@ const ListTokenPage = ({
                 socialAgents={socialAgents}
                 onToggleAgent={handleToggleAgent}
                 onConfigureAgent={openAgentPopup}
+                streamingPlatform={streamingPlatform}
+                handleStreamingPlatformChange={(platform) => setStreamingPlatform(platform)}
               />
             )}
           </form>

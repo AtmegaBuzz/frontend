@@ -10,6 +10,9 @@ export interface TokenData {
   twitter: string;
   telegram: string;
   discord: string;
+
+  youtubeChannelId: string | null;
+  twitchChannelId: string | null;
 }
 
 export interface AgentTemplate {
@@ -54,13 +57,6 @@ export interface AgentDisplay {
   createdAt: Date
 }
 
-export interface StreamDetails {
-  id: number
-  youtubeChannelId?: string
-  twitchChannelId?: string
-  aiTokenId: number
-}
-
 export interface AIToken {
   id: number
   tokenName: string
@@ -85,7 +81,6 @@ export interface AIToken {
   userId: number
   user: User
   agentDisplay?: AgentDisplay
-  streamDetails?: StreamDetails
   
   // Market data (not in schema, but needed for UI)
   price?: number
@@ -95,4 +90,7 @@ export interface AIToken {
   launchDate?: string
   allTimeHigh?: number
   allTimeHighDate?: string
+
+  youtubeChannelId: string | null;
+  twitchChannelId: string | null;
 }
