@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react'
-import { useParams, useNavigate } from 'react-router-dom'
+import { useParams } from 'react-router-dom'
 import { Heart, MessageSquare, Share2, Users, ExternalLink, Info, Shield, Star } from 'lucide-react'
 import { AIToken } from '@/interfaces'
 import { getToken } from '@/apis/token'
@@ -16,7 +16,7 @@ interface Message {
 
 const LiveStreamPage = () => {
   const { tokenId } = useParams<{ tokenId: string }>()
-  const navigate = useNavigate()
+  // const navigate = useNavigate()
   const [messages, setMessages] = useState<Message[]>([])
   const [newMessage, setNewMessage] = useState('')
   const [tokenInfo, setTokenInfo] = useState<AIToken | null>(null)
@@ -24,7 +24,7 @@ const LiveStreamPage = () => {
   const [isLoading, setIsLoading] = useState(true)
   const [showEvent, setShowEvent] = useState(false)
   const [showAgentModal, setShowAgentModal] = useState(false)
-  const messagesEndRef = useRef<HTMLDivElement>(null)
+  // const messagesEndRef = useRef<HTMLDivElement>(null)
   const [isLive, setIsLive] = useState(true)
   const [likeCount, setLikeCount] = useState(0)
   const [hasLiked, setHasLiked] = useState(false)
