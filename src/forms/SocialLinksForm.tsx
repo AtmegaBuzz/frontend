@@ -247,7 +247,7 @@ const SocialLinksForm: React.FC<SocialLinksFormProps> = ({
                 YouTube Channel ID
               </label>
               <input
-                type="text"
+                type="password"
                 id="youtubeChannelId"
                 name="youtubeChannelId"
                 value={tokenData.youtubeChannelId || ""}
