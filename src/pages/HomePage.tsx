@@ -5,6 +5,7 @@ import {
   Benefits,
   TokenStats,
 } from "../components";
+import SEO from "../Seo";
 
 
 const HomePage = () => {
@@ -20,6 +21,22 @@ const HomePage = () => {
   };
 
   return (
+    <>
+    <SEO 
+  title="ShillTube – AI-Powered Memecoin Entertainment Ecosystem | Crypto Meets Fun"
+  description="Join ShillTube, the first AI-driven memecoin entertainment platform transforming static tokens into lively AI personalities. Unlock viral meme culture, real-time AI interactions, and decentralized engagement. Redefine crypto entertainment with ShillTube."
+  keywords="AI memecoin, crypto entertainment, AI crypto personality, decentralized meme tokens, Web3 AI, viral crypto platform, blockchain entertainment, crypto culture, interactive memecoin, AI influencers, AI token utility, crypto engagement platform"
+  image="https://www.shilltube.fun/images/icon-256w.png"
+  ogTitle="ShillTube – The Future of Memecoin Entertainment Powered by AI"
+  ogDescription="Experience the evolution of memecoins with AI personalities, community-driven content, and viral entertainment on the blockchain. Engage, trade, and laugh with ShillTube."
+  twitterTitle="ShillTube 🚀 | AI Meets Memecoin for Next-Level Entertainment"
+  twitterDescription="From memes to AI personalities – ShillTube revolutionizes crypto entertainment. Dive into the next-gen memecoin movement!"
+  twitterImage="https://pbs.twimg.com/profile_images/1899640464652881920/h2lyRJ9J_400x400.jpg"
+  hashtags="#ShillTube #MemecoinRevolution #AICrypto #CryptoEntertainment #Web3Meme #BlockchainFun #AIInfluencer #CryptoCommunity #NextGenMemecoin #DeFiMeme #AIPoweredTokens #InteractiveCrypto"
+  canonical="https://www.shilltube.fun"
+  locale="en_US"
+/>
+
     <main>
       {/* Hero Section - Added proper padding for mobile to avoid navbar overlap */}
       <section
@@ -361,6 +378,7 @@ const HomePage = () => {
       {/* Token Statistics Section */}
       <TokenStats />
     </main>
+    </>
   );
 };
 

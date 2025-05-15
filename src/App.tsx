@@ -12,6 +12,7 @@ import {
 import { WalletProvider } from "./WalletProvider";
 import { ToastProvider } from "./hooks/toast";
 import { Provider as JotaiProvider } from "jotai";
+import { HelmetProvider } from 'react-helmet-async';
 
 // Add type declaration for ethereum provider
 declare global {
@@ -44,6 +45,7 @@ const App = () => {
   };
 
   return (
+    <HelmetProvider>
     <JotaiProvider>
       <WalletProvider>
         <ToastProvider>
@@ -82,6 +84,7 @@ const App = () => {
         </ToastProvider>
       </WalletProvider>
     </JotaiProvider>
+    </HelmetProvider>
   );
 };
 

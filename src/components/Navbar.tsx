@@ -114,6 +114,13 @@ const Navbar = () => {
               <div className="h-14 w-[1px] bg-white/20"></div>
               <nav className="flex items-center px-3">
                 <Link to="/explore" className="px-4 py-2 text-white text-base hover:text-yellow">Explore</Link>
+                <a
+                   href="https://docs.google.com/document/d/1sWLEqMEYSiyVzeXjouT8YgIfUGGmR2XQxVXg6u0zG8U/edit?usp=sharing"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="px-4 py-2 text-white text-base hover:text-yellow"> 
+                  Lite-Paper
+                </a>
                 {connected && (
                   <>
                     <Link to="/list-token" className="px-4 py-2 text-white text-base hover:text-yellow">List Token</Link>

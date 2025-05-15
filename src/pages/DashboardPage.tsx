@@ -89,7 +89,7 @@ const DashboardPage = () => {
   }, []);
 
   return (
-    <section className="bg-heroRed-light pt-24 pb-20">
+    <section className="bg-heroRed-light pt-24 pb-20 min-h-screen">
       <div className="container max-w-[1200px] mx-auto px-4">
         <h1 className="text-center mb-10">Project Dashboard</h1>
 

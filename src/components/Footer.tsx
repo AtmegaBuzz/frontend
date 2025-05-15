@@ -86,7 +86,7 @@ const Footer = () => {
               </li>
               <li>
                 <a
-                  href="https://discord.gg/shilltube"
+                  href="https://discord.gg/TvHrdWRE"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-gray-400 hover:text-yellow transition-colors flex items-center gap-2"
@@ -103,27 +103,22 @@ const Footer = () => {
                 </a>
               </li>
               <li>
-                <a
-                  href="#"
-                  className="text-gray-400 hover:text-yellow transition-colors flex items-center gap-2"
-                >
-                  <svg
-                    className="w-5 h-5"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth="2"
-                      d="M13 10V3L4 14h7v7l9-11h-7z"
-                    />
-                  </svg>
-                  Smart Contract
-                </a>
-              </li>
+              <a
+                href="https://t.me/+5BC-Zh0kVRxmZWQ1"
+                target="_blank"
+                className="text-gray-400 hover:text-yellow transition-colors flex items-center gap-2"
+              >
+              <svg
+                className="w-5 h-5"
+                fill="currentColor"
+                viewBox="0 0 24 24"
+                aria-hidden="true"
+              >
+                <path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.894 8.221l-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.446 1.394c-.14.18-.3.35-.6.35l.213-3.053 5.56-5.023c.226-.211-.05-.334-.348-.121l-6.867 4.326-2.962-.924c-.64-.2-.653-.64.135-.949l11.59-4.488c.32-.145.6.214.489 1.146z" />
+              </svg>
+                Telegram
+              </a>
+            </li>
             </ul>
           </div>
         </div>
