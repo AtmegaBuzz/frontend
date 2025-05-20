@@ -86,7 +86,7 @@ const Footer = () => {
               </li>
               <li>
                 <a
-                  href="https://discord.gg/shilltube"
+                  href="https://discord.gg/TQ6AczRT"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-gray-400 hover:text-yellow transition-colors flex items-center gap-2"
@@ -104,24 +104,19 @@ const Footer = () => {
               </li>
               <li>
                 <a
-                  href="#"
+                  href="https://t.me/+IOZTnW3Le51hZjQ1"
                   className="text-gray-400 hover:text-yellow transition-colors flex items-center gap-2"
                 >
                   <svg
                     className="w-5 h-5"
-                    fill="none"
-                    stroke="currentColor"
+                    fill="currentColor"
                     viewBox="0 0 24 24"
                     xmlns="http://www.w3.org/2000/svg"
                   >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth="2"
-                      d="M13 10V3L4 14h7v7l9-11h-7z"
-                    />
+                    <path d="M12 0C5.372 0 0 5.373 0 12s5.372 12 12 12 12-5.373 12-12S18.628 0 12 0zm5.64 7.441l-1.446 6.828c-.109.487-.393.606-.797.378l-2.203-1.625-1.062 1.025c-.117.117-.216.216-.441.216l.157-2.228 4.062-3.675c.176-.157-.039-.245-.274-.088l-5.016 3.163-2.157-.675c-.468-.147-.478-.468.098-.688l8.418-3.24c.392-.147.735.088.607.675z" />
                   </svg>
-                  Smart Contract
+
+                  Telegram
                 </a>
               </li>
             </ul>
