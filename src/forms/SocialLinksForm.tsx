@@ -1,7 +1,7 @@
 import React from "react";
-import SocialAgentCard from "../components/SocialAgentCard";
-import { TokenData } from "@/interfaces";
+import { TokenData } from "../types";
 import { Youtube, Twitch } from "lucide-react"; // Import icons
+import SocialAgentCard from "../components/SocialAgentCard";
 
 interface SocialAgentConfig {
   enabled: boolean;
@@ -32,7 +32,9 @@ interface SocialLinksFormProps {
   ) => void;
   onConfigureAgent: (agentType: "twitter" | "discord" | "instagram") => void;
   streamingPlatform: "youtube" | "twitch" | "tiktok";
-  handleStreamingPlatformChange: (platform: "youtube" | "twitch" | "tiktok") => void;
+  handleStreamingPlatformChange: (
+    platform: "youtube" | "twitch" | "tiktok"
+  ) => void;
 }
 
 const SocialLinksForm: React.FC<SocialLinksFormProps> = ({
@@ -131,21 +133,21 @@ const SocialLinksForm: React.FC<SocialLinksFormProps> = ({
 
       {/* Beautiful streaming platform selection */}
       <div className="mb-5">
-        <label className="block mb-2 font-bold">
-          Live Streaming Channel
-        </label>
+        <label className="block mb-2 font-bold">Live Streaming Channel</label>
         <p className="mb-3 text-sm text-gray-600">
-          Select a streaming platform and enter your channel ID (choose only one platform)
+          Select a streaming platform and enter your channel ID (choose only one
+          platform)
         </p>
 
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-4">
           {/* YouTube Option */}
           <label
             htmlFor="youtubeRadio"
-            className={`flex flex-col items-center justify-center p-4 rounded-lg border-2 transition-all cursor-pointer ${streamingPlatform === "youtube"
+            className={`flex flex-col items-center justify-center p-4 rounded-lg border-2 transition-all cursor-pointer ${
+              streamingPlatform === "youtube"
                 ? "border-red-500 bg-red-50"
                 : "border-gray-200 hover:border-gray-300 bg-white"
-              }`}
+            }`}
           >
             <input
               type="radio"
@@ -156,11 +158,22 @@ const SocialLinksForm: React.FC<SocialLinksFormProps> = ({
               onChange={() => handleStreamingPlatformChange("youtube")}
               className="sr-only" // Hide the actual radio input
             />
-            <div className={`w-12 h-12 mb-2 rounded-full flex items-center justify-center ${streamingPlatform === "youtube" ? "bg-red-500 text-white" : "bg-gray-100 text-gray-600"
-              }`}>
+            <div
+              className={`w-12 h-12 mb-2 rounded-full flex items-center justify-center ${
+                streamingPlatform === "youtube"
+                  ? "bg-red-500 text-white"
+                  : "bg-gray-100 text-gray-600"
+              }`}
+            >
               <Youtube size={24} />
             </div>
-            <span className={`font-medium ${streamingPlatform === "youtube" ? "text-red-500" : "text-gray-700"}`}>
+            <span
+              className={`font-medium ${
+                streamingPlatform === "youtube"
+                  ? "text-red-500"
+                  : "text-gray-700"
+              }`}
+            >
               YouTube
             </span>
             {streamingPlatform === "youtube" && (
@@ -171,10 +184,11 @@ const SocialLinksForm: React.FC<SocialLinksFormProps> = ({
           {/* Twitch Option */}
           <label
             htmlFor="twitchRadio"
-            className={`flex flex-col items-center justify-center p-4 rounded-lg border-2 transition-all cursor-pointer ${streamingPlatform === "twitch"
+            className={`flex flex-col items-center justify-center p-4 rounded-lg border-2 transition-all cursor-pointer ${
+              streamingPlatform === "twitch"
                 ? "border-purple-500 bg-purple-50"
                 : "border-gray-200 hover:border-gray-300 bg-white"
-              }`}
+            }`}
           >
             <input
               type="radio"
@@ -185,11 +199,22 @@ const SocialLinksForm: React.FC<SocialLinksFormProps> = ({
               onChange={() => handleStreamingPlatformChange("twitch")}
               className="sr-only"
             />
-            <div className={`w-12 h-12 mb-2 rounded-full flex items-center justify-center ${streamingPlatform === "twitch" ? "bg-purple-500 text-white" : "bg-gray-100 text-gray-600"
-              }`}>
+            <div
+              className={`w-12 h-12 mb-2 rounded-full flex items-center justify-center ${
+                streamingPlatform === "twitch"
+                  ? "bg-purple-500 text-white"
+                  : "bg-gray-100 text-gray-600"
+              }`}
+            >
               <Twitch size={24} />
             </div>
-            <span className={`font-medium ${streamingPlatform === "twitch" ? "text-purple-500" : "text-gray-700"}`}>
+            <span
+              className={`font-medium ${
+                streamingPlatform === "twitch"
+                  ? "text-purple-500"
+                  : "text-gray-700"
+              }`}
+            >
               Twitch
             </span>
             {streamingPlatform === "twitch" && (
@@ -200,10 +225,11 @@ const SocialLinksForm: React.FC<SocialLinksFormProps> = ({
           {/* TikTok Option */}
           <label
             htmlFor="tiktokRadio"
-            className={`flex flex-col items-center justify-center p-4 rounded-lg border-2 transition-all cursor-pointer ${streamingPlatform === "tiktok"
+            className={`flex flex-col items-center justify-center p-4 rounded-lg border-2 transition-all cursor-pointer ${
+              streamingPlatform === "tiktok"
                 ? "border-black bg-gray-50"
                 : "border-gray-200 hover:border-gray-300 bg-white"
-              }`}
+            }`}
           >
             <input
               type="radio"
@@ -214,8 +240,13 @@ const SocialLinksForm: React.FC<SocialLinksFormProps> = ({
               onChange={() => handleStreamingPlatformChange("tiktok")}
               className="sr-only"
             />
-            <div className={`w-12 h-12 mb-2 rounded-full flex items-center justify-center ${streamingPlatform === "tiktok" ? "bg-black text-white" : "bg-gray-100 text-gray-600"
-              }`}>
+            <div
+              className={`w-12 h-12 mb-2 rounded-full flex items-center justify-center ${
+                streamingPlatform === "tiktok"
+                  ? "bg-black text-white"
+                  : "bg-gray-100 text-gray-600"
+              }`}
+            >
               <svg
                 width="24"
                 height="24"
@@ -228,9 +259,12 @@ const SocialLinksForm: React.FC<SocialLinksFormProps> = ({
                   fill="black"
                 />
               </svg>
-
             </div>
-            <span className={`font-medium ${streamingPlatform === "tiktok" ? "text-black" : "text-gray-700"}`}>
+            <span
+              className={`font-medium ${
+                streamingPlatform === "tiktok" ? "text-black" : "text-gray-700"
+              }`}
+            >
               TikTok
             </span>
             {streamingPlatform === "tiktok" && (
@@ -243,7 +277,10 @@ const SocialLinksForm: React.FC<SocialLinksFormProps> = ({
         <div className="mt-4 p-4 bg-gray-50 rounded-lg border border-gray-200">
           {streamingPlatform === "youtube" && (
             <div>
-              <label htmlFor="youtubeChannelId" className="block mb-2 text-sm font-medium">
+              <label
+                htmlFor="youtubeChannelId"
+                className="block mb-2 text-sm font-medium"
+              >
                 YouTube Channel ID
               </label>
               <input
@@ -263,7 +300,10 @@ const SocialLinksForm: React.FC<SocialLinksFormProps> = ({
 
           {streamingPlatform === "twitch" && (
             <div>
-              <label htmlFor="twitchChannelId" className="block mb-2 text-sm font-medium">
+              <label
+                htmlFor="twitchChannelId"
+                className="block mb-2 text-sm font-medium"
+              >
                 Twitch Username
               </label>
               <input
@@ -283,7 +323,10 @@ const SocialLinksForm: React.FC<SocialLinksFormProps> = ({
 
           {streamingPlatform === "tiktok" && (
             <div>
-              <label htmlFor="tiktokChannelId" className="block mb-2 text-sm font-medium">
+              <label
+                htmlFor="tiktokChannelId"
+                className="block mb-2 text-sm font-medium"
+              >
                 TikTok Username
               </label>
               <input

@@ -1,8 +1,7 @@
-import ImageUpload from "@/components/ImageUpload";
-import { useToast } from "@/hooks/toast";
-import { TokenData } from "@/interfaces";
+import ImageUpload from "../components/ImageUpload";
+import { useToast } from "../hooks/toast";
+import { TokenData } from "../types";
 import React, { useRef } from "react";
-
 
 interface TokenInfoFormProps {
   tokenData: TokenData;
@@ -21,26 +20,26 @@ const TokenInfoForm: React.FC<TokenInfoFormProps> = ({
   handleInputChange,
   nextStep,
 }) => {
-
   const formRef = useRef<HTMLFormElement>(null);
 
   const { toast } = useToast();
 
-  const handleSubmit = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+  const handleSubmit = (
+    event: React.MouseEvent<HTMLButtonElement, MouseEvent>
+  ) => {
     event.preventDefault(); // Prevent default form submission
 
     if (!formRef.current?.checkValidity()) {
       toast({
         type: "warning",
         message: "Please fill all the required details!",
-        duration: 3000
-      })
+        duration: 3000,
+      });
       return;
     }
 
     nextStep();
   };
-
 
   return (
     <form ref={formRef}>
@@ -101,7 +100,6 @@ const TokenInfoForm: React.FC<TokenInfoFormProps> = ({
           Token Image URL <span className="text-red-500">*</span>
         </label>
         <ImageUpload onImageSelect={onFileChange} />
-
       </div>
 
       <div className="mb-5">
@@ -136,7 +134,11 @@ const TokenInfoForm: React.FC<TokenInfoFormProps> = ({
       </div>
 
       <div className="flex justify-end mt-8">
-        <button type="button" onClick={(e) => handleSubmit(e)} className="primary-button">
+        <button
+          type="button"
+          onClick={(e) => handleSubmit(e)}
+          className="primary-button"
+        >
           Next
         </button>
       </div>
