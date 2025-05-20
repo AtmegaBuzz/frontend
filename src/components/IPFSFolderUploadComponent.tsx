@@ -1,8 +1,8 @@
-import React, { useState, useRef, ChangeEvent } from 'react';
-import axios from 'axios';
+import React, { useState, useRef, ChangeEvent, JSX } from "react";
+import axios from "axios";
 
 // Extend the HTMLInputElement interface to include directory attributes
-declare module 'react' {
+declare module "react" {
   interface InputHTMLAttributes<T> extends HTMLAttributes<T> {
     // Add non-standard directory attributes
     directory?: string;
@@ -39,14 +39,14 @@ interface FolderUploadComponentProps {
 }
 
 // This component is specifically configured for Vite + React + TypeScript with IPFS support
-const IPFSFolderUploadComponent: React.FC<FolderUploadComponentProps> = ({ 
-  onFolderSelect, 
+const IPFSFolderUploadComponent: React.FC<FolderUploadComponentProps> = ({
+  onFolderSelect,
   onIPFSUpload,
-  pinataJWT 
+  pinataJWT,
 }) => {
   // State with proper typing
   const [selectedFolder, setSelectedFolder] = useState<FileList | null>(null);
-  const [folderName, setFolderName] = useState<string>('');
+  const [folderName, setFolderName] = useState<string>("");
   const [fileCount, setFileCount] = useState<number>(0);
   const [fileTree, setFileTree] = useState<FileNode[]>([]);
   const [isUploading, setIsUploading] = useState<boolean>(false);
@@ -64,7 +64,7 @@ const IPFSFolderUploadComponent: React.FC<FolderUploadComponentProps> = ({
     // Process each file to build the tree
     Array.from(files).forEach((file) => {
       const path = (file as FileWithPath).webkitRelativePath;
-      const pathParts = path.split('/');
+      const pathParts = path.split("/");
 
       // Skip empty files or paths
       if (pathParts.length === 0) return;
@@ -79,7 +79,7 @@ const IPFSFolderUploadComponent: React.FC<FolderUploadComponentProps> = ({
           path: rootDirName,
           isDirectory: true,
           children: [],
-          level: 0
+          level: 0,
         };
       }
 
@@ -91,7 +91,7 @@ const IPFSFolderUploadComponent: React.FC<FolderUploadComponentProps> = ({
           path: path,
           isDirectory: false,
           children: [],
-          level: 1
+          level: 1,
         });
         return;
       }
@@ -106,8 +106,8 @@ const IPFSFolderUploadComponent: React.FC<FolderUploadComponentProps> = ({
         currentPath = `${currentPath}/${dirName}`;
 
         // Find if this directory already exists in the current node's children
-        let dirNode = currentNode.children.find(child =>
-          child.isDirectory && child.name === dirName
+        let dirNode = currentNode.children.find(
+          (child) => child.isDirectory && child.name === dirName
         );
 
         // If not, create it
@@ -117,7 +117,7 @@ const IPFSFolderUploadComponent: React.FC<FolderUploadComponentProps> = ({
             path: currentPath,
             isDirectory: true,
             children: [],
-            level: i
+            level: i,
           };
           currentNode.children.push(dirNode);
         }
@@ -134,23 +134,25 @@ const IPFSFolderUploadComponent: React.FC<FolderUploadComponentProps> = ({
           path: path,
           isDirectory: false,
           children: [],
-          level: pathParts.length - 1
+          level: pathParts.length - 1,
         });
       }
     });
 
     // Sort the tree: directories first, then files, both alphabetically
     const sortTree = (nodes: FileNode[]): FileNode[] => {
-      return nodes.sort((a, b) => {
-        if (a.isDirectory && !b.isDirectory) return -1;
-        if (!a.isDirectory && b.isDirectory) return 1;
-        return a.name.localeCompare(b.name);
-      }).map(node => {
-        if (node.children.length > 0) {
-          node.children = sortTree(node.children);
-        }
-        return node;
-      });
+      return nodes
+        .sort((a, b) => {
+          if (a.isDirectory && !b.isDirectory) return -1;
+          if (!a.isDirectory && b.isDirectory) return 1;
+          return a.name.localeCompare(b.name);
+        })
+        .map((node) => {
+          if (node.children.length > 0) {
+            node.children = sortTree(node.children);
+          }
+          return node;
+        });
     };
 
     // Convert the root object to a sorted array of FileNodes
@@ -159,7 +161,7 @@ const IPFSFolderUploadComponent: React.FC<FolderUploadComponentProps> = ({
 
   const handleFolderChange = (event: ChangeEvent<HTMLInputElement>): void => {
     const files = event.target.files;
-    
+
     // Reset upload states
     setIsUploading(false);
     setUploadProgress(0);
@@ -170,7 +172,7 @@ const IPFSFolderUploadComponent: React.FC<FolderUploadComponentProps> = ({
       // Get folder name from the path of the first file
       // Use type assertion to access webkitRelativePath
       const path = (files[0] as FileWithPath).webkitRelativePath;
-      const folderName = path.split('/')[0];
+      const folderName = path.split("/")[0];
 
       // Build the file tree
       const tree = buildFileTree(files);
@@ -189,7 +191,7 @@ const IPFSFolderUploadComponent: React.FC<FolderUploadComponentProps> = ({
 
   const handleRemoveFolder = (): void => {
     setSelectedFolder(null);
-    setFolderName('');
+    setFolderName("");
     setFileCount(0);
     setFileTree([]);
     setIsUploading(false);
@@ -199,7 +201,7 @@ const IPFSFolderUploadComponent: React.FC<FolderUploadComponentProps> = ({
 
     // Reset the file input using the ref
     if (fileInputRef.current) {
-      fileInputRef.current.value = '';
+      fileInputRef.current.value = "";
     }
 
     // Call the callback if provided
@@ -213,7 +215,7 @@ const IPFSFolderUploadComponent: React.FC<FolderUploadComponentProps> = ({
 
   const uploadToIPFS = async (): Promise<void> => {
     if (!selectedFolder || !pinataJWT) {
-      setUploadError('No folder selected or missing Pinata JWT token');
+      setUploadError("No folder selected or missing Pinata JWT token");
       return;
     }
 
@@ -224,65 +226,69 @@ const IPFSFolderUploadComponent: React.FC<FolderUploadComponentProps> = ({
     try {
       // Create a FormData instance to send the files
       const formData = new FormData();
-      
+
       // Append metadata
       const metadata = JSON.stringify({
         name: folderName,
         keyvalues: {
           uploadDate: new Date().toISOString(),
-          fileCount: fileCount
-        }
+          fileCount: fileCount,
+        },
       });
-      formData.append('pinataMetadata', metadata);
-      
+      formData.append("pinataMetadata", metadata);
+
       // Optional pinata options
       const options = JSON.stringify({
         cidVersion: 1,
-        wrapWithDirectory: true
+        wrapWithDirectory: true,
       });
-      formData.append('pinataOptions', options);
-      
+      formData.append("pinataOptions", options);
+
       // Append all files to formData with their relative paths
       Array.from(selectedFolder).forEach((file, index) => {
         const filePath = (file as FileWithPath).webkitRelativePath;
         // Ensure all files are under the same root folder name
-        formData.append('file', file, filePath);
-        
+        formData.append("file", file, filePath);
+
         // Update progress
         const progress = Math.round(((index + 1) / fileCount) * 90); // Cap at 90% for network time
         setUploadProgress(progress);
       });
-      
+
       // Make the upload request to Pinata
       const response = await axios.post(
-        'https://api.pinata.cloud/pinning/pinFileToIPFS',
+        "https://api.pinata.cloud/pinning/pinFileToIPFS",
         formData,
         {
           headers: {
-            'Authorization': `Bearer ${pinataJWT}`,
-            'Content-Type': 'multipart/form-data'
+            Authorization: `Bearer ${pinataJWT}`,
+            "Content-Type": "multipart/form-data",
           },
           onUploadProgress: (progressEvent) => {
             // Calculate progress for larger files during upload
             if (progressEvent.total) {
-              const progress = Math.round((progressEvent.loaded / progressEvent.total) * 100);
+              const progress = Math.round(
+                (progressEvent.loaded / progressEvent.total) * 100
+              );
               setUploadProgress(Math.min(progress, 99)); // Cap at 99% until complete
             }
-          }
+          },
         }
       );
-      
+
       // Update state with the result
       setIpfsResult(response.data);
       setUploadProgress(100);
-      
+
       // Call the callback if provided
       if (onIPFSUpload) {
         onIPFSUpload(response.data);
       }
     } catch (error) {
-      console.error('IPFS upload error:', error);
-      setUploadError(error instanceof Error ? error.message : 'Unknown error occurred');
+      console.error("IPFS upload error:", error);
+      setUploadError(
+        error instanceof Error ? error.message : "Unknown error occurred"
+      );
     } finally {
       setIsUploading(false);
     }
@@ -293,7 +299,9 @@ const IPFSFolderUploadComponent: React.FC<FolderUploadComponentProps> = ({
     return nodes.map((node) => (
       <div key={node.path} className="file-tree-item">
         <div
-          className={`flex items-center py-1 hover:bg-gray-100 rounded px-1 ${node.isDirectory ? 'font-medium' : ''}`}
+          className={`flex items-center py-1 hover:bg-gray-100 rounded px-1 ${
+            node.isDirectory ? "font-medium" : ""
+          }`}
           style={{ paddingLeft: `${node.level * 12}px` }}
         >
           {node.isDirectory ? (
@@ -360,17 +368,21 @@ const IPFSFolderUploadComponent: React.FC<FolderUploadComponentProps> = ({
           {/* IPFS Upload Status */}
           {ipfsResult && (
             <div className="mb-3 p-3 bg-green-50 rounded-lg text-left">
-              <p className="font-medium text-green-700">Successfully uploaded to IPFS!</p>
+              <p className="font-medium text-green-700">
+                Successfully uploaded to IPFS!
+              </p>
               <p className="text-sm text-green-600 break-all">
-                <span className="font-medium">IPFS Hash:</span> {ipfsResult.IpfsHash}
+                <span className="font-medium">IPFS Hash:</span>{" "}
+                {ipfsResult.IpfsHash}
               </p>
               <p className="text-sm text-green-600">
-                <span className="font-medium">Size:</span> {(ipfsResult.PinSize / 1024).toFixed(2)} KB
+                <span className="font-medium">Size:</span>{" "}
+                {(ipfsResult.PinSize / 1024).toFixed(2)} KB
               </p>
               <p className="text-sm text-green-600">
-                <a 
-                  href={`https://gateway.pinata.cloud/ipfs/${ipfsResult.IpfsHash}`} 
-                  target="_blank" 
+                <a
+                  href={`https://gateway.pinata.cloud/ipfs/${ipfsResult.IpfsHash}`}
+                  target="_blank"
                   rel="noopener noreferrer"
                   className="text-primary hover:underline"
                 >
@@ -384,12 +396,14 @@ const IPFSFolderUploadComponent: React.FC<FolderUploadComponentProps> = ({
           {isUploading && (
             <div className="mb-3">
               <div className="w-full bg-gray-200 rounded-full h-2.5">
-                <div 
-                  className="bg-primary h-2.5 rounded-full" 
+                <div
+                  className="bg-primary h-2.5 rounded-full"
                   style={{ width: `${uploadProgress}%` }}
                 ></div>
               </div>
-              <p className="text-sm text-gray-600 mt-1">Uploading... {uploadProgress}%</p>
+              <p className="text-sm text-gray-600 mt-1">
+                Uploading... {uploadProgress}%
+              </p>
             </div>
           )}
 
@@ -406,7 +420,9 @@ const IPFSFolderUploadComponent: React.FC<FolderUploadComponentProps> = ({
               {fileTree.length > 0 ? (
                 renderFileTree(fileTree)
               ) : (
-                <p className="text-gray-500 text-sm p-2">Loading file structure...</p>
+                <p className="text-gray-500 text-sm p-2">
+                  Loading file structure...
+                </p>
               )}
             </div>
           </div>
@@ -429,7 +445,7 @@ const IPFSFolderUploadComponent: React.FC<FolderUploadComponentProps> = ({
               className="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors text-sm"
               disabled={isUploading}
             >
-              {ipfsResult ? 'Select Another Folder' : 'Remove Folder'}
+              {ipfsResult ? "Select Another Folder" : "Remove Folder"}
             </button>
           </div>
         </div>

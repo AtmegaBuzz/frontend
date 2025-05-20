@@ -1,12 +1,12 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Heart, MessageSquare } from "lucide-react";
+import f1Image from "/1f.png";
+import f2Image from "/2f.png";
+import f3Image from "/3f.png";
+import f4Image from "/f4.png";
+import video from "/shillo.mp4";
 import ScrollVelocity from "./ScrollVelocity";
-import f1Image from "@/assets/1f.png";
-import f2Image from "@/assets/2f.png";
-import f3Image from "@/assets/3f.png";
-import f4Image from "@/assets/f4.png";
-import video from "@/assets/shilltuberlive.mp4";
 
 interface StreamInfo {
   id: string;
@@ -83,7 +83,7 @@ const FeaturedStreams = () => {
   const gridStreams = streams.slice(1);
 
   return (
-    <section className="bg-yellow bg-pattern py-10">
+    <section className="bg-yellow bg-[url('/pattern-bg.png')] py-10">
       <div className="container mx-auto px-4 py-8 md:px-6 lg:px-8">
         {/* Centered Header */}
         <div className="bg-[#FCFCE6] border-4 border-black rounded-xl p-6 mb-8 text-center">
