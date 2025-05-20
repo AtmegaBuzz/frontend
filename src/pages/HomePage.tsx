@@ -33,7 +33,7 @@ const HomePage = () => {
                 textShadow: "-12px 12px 0 #1f2024",
               }}
             >
-              SH
+              SHILL
             </h1>
             <h1
               className="text-[14vw] lg:text-[12vw] relative z-[2] mt-0 mb-0 text-white font-black cursor-pointer hover:text-[#5879ff]"
@@ -42,7 +42,7 @@ const HomePage = () => {
                 textShadow: "-12px 12px 0 #1f2024",
               }}
             >
-              ILL
+              TU
             </h1>
             <h1
               className="text-[14vw] lg:text-[12vw] relative z-[3] mt-0 mb-0 text-white font-black cursor-pointer hover:text-[#ff55a2] pl-[3px]"
@@ -51,7 +51,7 @@ const HomePage = () => {
                 textShadow: "-9px 10px 0 #1f2024",
               }}
             >
-              O
+              BE
             </h1>
           </div>
 
@@ -181,7 +181,7 @@ const HomePage = () => {
             <h2 className="text-black mb-5 drop-shadow-[2px_2px_0_#ffffff]">
               AI-Powered Memecoin Entertainment Platform
             </h2>
-            <p className="text-black text-lg mb-8 drop-shadow-[1px_1px_0_#000]">
+            <p className="text-white text-lg mb-8 drop-shadow-[1px_1px_0_#000]">
               Transform your static memecoin into a dynamic, engaging AI
               personality that interacts with your community 24/7. Stand out in
               the crowded memecoin market with live entertainment and automated

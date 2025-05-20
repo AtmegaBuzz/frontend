@@ -63,7 +63,7 @@ const Navbar = () => {
               alt="Shillo Logo"
               className="mr-3"
             />
-            <div className="text-white text-base font-medium">Shillo</div>
+            <div className="text-white text-base font-medium">ShillTube</div>
           </Link>
 
           <button
@@ -104,7 +104,7 @@ const Navbar = () => {
                   alt="Shillo Logo"
                   className="mr-3"
                 />
-                <div className="text-white text-base font-medium">Shillo</div>
+                <div className="text-white text-base font-medium">ShillTube</div>
               </Link>
               <div className="h-14 w-[1px] bg-white/20"></div>
               <nav className="flex items-center px-3">
