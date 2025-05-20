@@ -1,5 +1,5 @@
 import { PrivyProvider } from "@privy-io/react-auth";
-import { celoAlfajores } from "viem/chains";
+import { baseSepolia } from "viem/chains";
 
 export default function WalletProvider({
   children,
@@ -11,8 +11,8 @@ export default function WalletProvider({
       appId={import.meta.env.VITE_PRIVY_APP_ID}
       clientId={import.meta.env.VITE_CLIENT_ID}
       config={{
-        defaultChain: celoAlfajores,
-        supportedChains: [celoAlfajores],
+        defaultChain: baseSepolia,
+        supportedChains: [baseSepolia],
         appearance: {
           theme: "light",
           accentColor: "#676FFF",
