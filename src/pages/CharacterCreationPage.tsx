@@ -1,13 +1,25 @@
-import { addTokenCharacter, addTokenPersonality, getAgentTemplates } from "@/apis/create-token-form";
-import { uploadFile } from "@/apis/file-upload";
-import { authTokenAtom } from "@/atoms/global.atom";
-import ImageUpload from "@/components/ImageUpload";
-import IPFSFolderUploadComponent from "@/components/IPFSFolderUploadComponent";
-import { useToast } from "@/hooks/toast";
-import { AgentTemplate } from "@/interfaces";
+import {
+  addTokenCharacter,
+  addTokenContract,
+  addTokenPersonality,
+  getAgentTemplates,
+} from "../apis/create-token-form";
+import { uploadFile } from "../apis/file-upload";
+import { tokenDataAtom } from "../atoms";
+import ImageUpload from "../components/ImageUpload";
+import IPFSFolderUploadComponent from "../components/IPFSFolderUploadComponent";
+import { useToast } from "../hooks/toast";
+import { AgentTemplate } from "../types";
 import { useAtom } from "jotai";
 import { useEffect, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
+import { useWriteContract } from "wagmi";
+import { ABI } from "../../abi";
+import { createPublicClient, http, parseEther } from "viem";
+import { celoAlfajores } from "viem/chains";
+
+const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
+
 
 interface CharacterCreationPageProps {
   initialTokenData: {
@@ -44,6 +56,7 @@ const CharacterCreationPage = ({
     initialTokenData || { name: "", symbol: "" };
 
   const [agentTemplates, setAgentTemplates] = useState<AgentTemplate[]>([]);
+  const { writeContractAsync } = useWriteContract();
 
   const [characterType, setCharacterType] = useState<CharacterType>("vtuber");
   const [selectedTemplate, setSelectedTemplate] = useState<number>(1);
@@ -51,7 +64,8 @@ const CharacterCreationPage = ({
 
   const { toast } = useToast();
 
-  const [authToken,] = useAtom(authTokenAtom);
+  const [authToken, setAuthToken] = useState<string>();
+  const [contractTokenData, setContractTokenData] = useAtom(tokenDataAtom);
 
   // Character name is automatically derived from token name
   const [characterName] = useState(
@@ -69,8 +83,18 @@ const CharacterCreationPage = ({
   const [agentIpfsUrl, setAgentIpfsUrl] = useState("");
 
   const [pinataJwt, setPinataJwt] = useState("");
-  const [agentPfp, setAgentPfp] = useState("")
+  const [agentPfp, setAgentPfp] = useState("");
 
+  const viemClient = createPublicClient({
+    cacheTime: 0,
+    batch: {
+      multicall: true
+    },
+    chain: celoAlfajores,
+    transport: http(
+      `https://celo-alfajores.drpc.org`
+    )
+  })
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -80,35 +104,98 @@ const CharacterCreationPage = ({
     let agentIpfsURL = "";
 
     if (characterType === "vtuber") {
-      const selectedAgentTemplate = agentTemplates.filter(agentTemplate => agentTemplate.id === selectedTemplate);
+      const selectedAgentTemplate = agentTemplates.filter(
+        (agentTemplate) => agentTemplate.id === selectedTemplate
+      );
       agentImageUrl = selectedAgentTemplate[0].agentImageUrl;
-      agentIpfsURL = selectedAgentTemplate[0].agentIpfsUrl
+      agentIpfsURL = selectedAgentTemplate[0].agentIpfsUrl;
     } else {
       agentImageUrl = agentPfp;
       agentIpfsURL = agentIpfsUrl;
     }
 
 
+    const { message, statusCode } = await addTokenCharacter(
+      authToken!,
+      location.state.id,
+      agentImageUrl,
+      agentName,
+      agentIpfsURL
+    );
 
-    const { message, statusCode } = await addTokenCharacter(authToken!, location.state.id, agentImageUrl, agentName, agentIpfsURL);
+    setContractTokenData({
+      name: contractTokenData?.name!,
+      symbol: contractTokenData?.symbol!,
+      aiImageIpfsUrl: agentImageUrl!,
+      aiModelIpfsUrl: agentIpfsURL!,
+      initialSupply: contractTokenData?.initialSupply!
+    })
+
+    await writeContractAsync({
+      abi: ABI,
+      address: import.meta.env.VITE_CONTRACT_ADDRESS,
+      functionName: 'createToken',
+      args: [
+        contractTokenData?.name,                  // name
+        contractTokenData?.symbol,                       // symbol
+        agentImageUrl,         // aiImageIpfsUrl
+        agentIpfsURL,         // aiModelIpfsUrl
+        BigInt(contractTokenData?.initialSupply!),        // initialSupply
+        parseEther("0.001"),        // initialPrice
+        2
+      ],
+    });
+
+    const tokenListCount = await viemClient.readContract({
+      address: import.meta.env.VITE_CONTRACT_ADDRESS,
+      abi: ABI,
+      functionName: "getTokenCount"
+    })
+    
+    console.log(parseInt((tokenListCount as bigint).toString()),"Total tokens")
+    await sleep(5000);
+
+    const contractAddress = await viemClient.readContract({
+      address: import.meta.env.VITE_CONTRACT_ADDRESS,
+      abi: ABI,
+      functionName: "allTokens",
+      args: [parseInt((tokenListCount as bigint).toString())]
+    })
+    await sleep(5000);
+
+    console.log("Contract Addres:", contractAddress)
 
     if (statusCode !== 201 && message !== "Agent info already exists") {
       toast({
         type: "danger",
         message: message,
-        duration: 3000
+        duration: 3000,
       });
       setIsSubmitting(false);
       return;
     }
 
-    const resp = await addTokenPersonality(authToken!, location.state.id, voiceType, [personalityType]);
+    const addContractResp = await addTokenContract(
+      authToken!,
+      location.state.id,
+      contractAddress as string
+    );
+
+    console.log(addContractResp.statusCode, "Contract Update")
+
+
+    const resp = await addTokenPersonality(
+      authToken!,
+      location.state.id,
+      voiceType,
+      [personalityType]
+    );
 
     if (resp.statusCode !== 201) {
       toast({
         type: "danger",
         message: resp.message,
-        duration: 3000
+        duration: 3000,
       });
       setIsSubmitting(false);
       return;
@@ -116,20 +203,19 @@ const CharacterCreationPage = ({
       toast({
         type: "success",
         message: "You Agent has been created successfully!",
-        duration: 3000
+        duration: 3000,
       });
     }
 
     setIsSubmitting(false);
-    navigate("/dashboard");
+    navigate("/explore");
   };
 
   const onIpfsUpload = (data: any) => {
     setAgentIpfsUrl(`https://ipfs.io/ipfs/${data.IpfsHash}`);
-  }
+  };
 
   const nextStep = async () => {
-
     if (characterType === "custom") {
       localStorage.setItem("pinataJWT", pinataJwt);
 
@@ -139,24 +225,27 @@ const CharacterCreationPage = ({
         toast({
           type: "danger",
           message: "Live2d Model didn't uploaded to IPFS, Try Again!",
-          duration: 3000
+          duration: 3000,
         });
         return;
       }
 
-      const {message, statusCode} = await uploadFile(authToken!, customImage!, "agent-pfp")
+      const { message, statusCode } = await uploadFile(
+        authToken!,
+        customImage!,
+        "agent-pfp"
+      );
 
       if (statusCode !== 201) {
         toast({
           type: "danger",
           message: message,
-          duration: 3000
+          duration: 3000,
         });
         return;
       }
 
       setAgentPfp(message);
-
     }
 
     setCurrentStep((prev) => prev + 1);
@@ -167,27 +256,29 @@ const CharacterCreationPage = ({
   };
 
   useEffect(() => {
-
     const getAgentTemplateData = async () => {
-
       const agentData = await getAgentTemplates(authToken!);
       setAgentTemplates(agentData);
-    }
+    };
 
     getAgentTemplateData();
-
-  }, [])
-
+  }, []);
 
   // Get Pinata Jwt auth token
-  useEffect(()=> {
+  useEffect(() => {
     const pinataJWT = localStorage.getItem("pinataJWT");
 
     if (pinataJWT !== null) {
       setPinataJwt(pinataJWT);
     }
-    
-  },[])
+  }, []);
+
+  useEffect(() => {
+    const storedToken = localStorage.getItem("accessToken");
+    if (storedToken) {
+      setAuthToken(storedToken);
+    }
+  }, []);
 
   return (
     <section className="bg-blue-dark bg-pattern pt-24 pb-20">
@@ -266,7 +357,9 @@ const CharacterCreationPage = ({
                             />
                           </div>
                           <div className="h-1/5 flex items-center justify-center">
-                            <p className="m-0 font-medium text-center">{template.agentName}</p>
+                            <p className="m-0 font-medium text-center">
+                              {template.agentName}
+                            </p>
                           </div>
                         </div>
                       ))}
@@ -281,7 +374,6 @@ const CharacterCreationPage = ({
                       For best results, use a clear image with a single
                       character and minimal background.
                     </p>
-
 
                     {/* Pinata API Key */}
 
@@ -304,20 +396,29 @@ const CharacterCreationPage = ({
                     {/* Agent PFP */}
 
                     <div className="my-5">
-                      <label htmlFor="image-upload" className="block mb-2 font-bold">
+                      <label
+                        htmlFor="image-upload"
+                        className="block mb-2 font-bold"
+                      >
                         Agent PFP <span className="text-red-500">*</span>
                       </label>
                       <ImageUpload onImageSelect={setCustomImage} />
                     </div>
 
                     <div className="mb-10">
-                      <label htmlFor="folder-upload" className="block mb-2 font-bold">
-                        Live2d Model Folder <span className="text-red-500">*</span>
+                      <label
+                        htmlFor="folder-upload"
+                        className="block mb-2 font-bold"
+                      >
+                        Live2d Model Folder{" "}
+                        <span className="text-red-500">*</span>
                       </label>
                       {/* <FolderUpload /> */}
-                      <IPFSFolderUploadComponent onIPFSUpload={onIpfsUpload} pinataJWT={pinataJwt} />
+                      <IPFSFolderUploadComponent
+                        onIPFSUpload={onIpfsUpload}
+                        pinataJWT={pinataJwt}
+                      />
                     </div>
-
                   </div>
                 )}
 

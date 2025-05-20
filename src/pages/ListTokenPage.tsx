@@ -1,14 +1,15 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import TokenInfoForm from "../forms/TokenInfoForm";
 import SocialLinksForm from "../forms/SocialLinksForm";
+import { createToken } from "../apis/create-token-form";
+import { useToast } from "../hooks/toast";
+import { uploadFile } from "../apis/file-upload";
+import { TokenData } from "../types";
 import AgentConfigurationPopup from "../components/AgentConfigurationPopup";
-import { TokenData } from "@/interfaces";
-import { createToken } from "@/apis/create-token-form";
 import { useAtom } from "jotai";
-import { authTokenAtom } from "@/atoms/global.atom";
-import { useToast } from "@/hooks/toast";
-import { uploadFile } from "@/apis/file-upload";
+import { tokenDataAtom } from "../atoms";
+// import { useWriteContract } from "wagmi";
 
 interface ListTokenPageProps {
   tokenData: TokenData | null;
@@ -41,16 +42,53 @@ const ListTokenPage = ({
     twitter: existingTokenData?.twitter || "",
     telegram: existingTokenData?.telegram || "",
     discord: existingTokenData?.discord || "",
-    youtubeChannelId: existingTokenData?.youtubeChannelId || "", 
-    twitchChannelId: existingTokenData?.twitchChannelId || ""
+    youtubeChannelId: existingTokenData?.youtubeChannelId || "",
+    twitchChannelId: existingTokenData?.twitchChannelId || "",
   });
   const [formStep, setFormStep] = useState(1);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [customImage, setCustomImage] = useState<File | null>(null);
-  const [streamingPlatform, setStreamingPlatform] = useState<"youtube" | "twitch" | "tiktok">("youtube");
-  const [authToken,] = useAtom(authTokenAtom);
+  const [streamingPlatform, setStreamingPlatform] = useState<
+    "youtube" | "twitch" | "tiktok"
+  >("youtube");
   const { toast } = useToast();
+  const [authToken, setAuthToken] = useState<string>();
+  const [, setContractTokenData] = useAtom(tokenDataAtom);
+  // const { writeContractAsync } = useWriteContract();
 
+
+  // useWatchContractEvent({
+  //   address: import.meta.env.VITE_CONTRACT_ADDRESS,
+  //   abi: ABI,
+  //   eventName: 'TokenCreated',
+  //   chainId:celoAlfajores.id,
+  //   onLogs(logs) {
+  //     console.log('New logs!', logs)
+  //   },
+  //   onError (err) {
+  //     console.log("eer", err)
+  //     console.log({
+  //       address: import.meta.env.VITE_CONTRACT_ADDRESS,
+
+  //     })
+  //   }
+  // })
+
+  // const { data: getTotalTokensListed, refetch } = useReadContract({
+  //   address: import.meta.env.VITE_CONTRACT_ADDRESS,
+  //   abi: ABI,
+  //   functionName: 'getTokenCount',
+  // });
+
+  // const { data: blockNumber } = useBlockNumber({ watch: true })
+
+
+  // const { data: contractAddress } = useReadContract({
+  //   address: import.meta.env.VITE_CONTRACT_ADDRESS,
+  //   abi: ABI,
+  //   functionName: 'allTokens',
+  //   args: [parseInt(getTotalTokensListed as string) - 1]
+  // });
 
   // Social agents configuration
   const [showAgentPopup, setShowAgentPopup] = useState(false);
@@ -100,51 +138,62 @@ const ListTokenPage = ({
     }));
   };
 
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
+    if (authToken && customImage) {
+      // Pass token data up to parent
+      updateTokenData(tokenData);
 
-    // Pass token data up to parent
-    updateTokenData(tokenData);
+      await uploadFile(authToken, customImage, "tokens")
+        .then((res) => {
+          if (res.statusCode !== 201) {
+            toast({
+              type: "danger",
+              message: res.message,
+              duration: 3000,
+            });
+            return res;
+          }
+          if (res?.url) {
+            setTokenData((prevState) => ({
+              ...prevState,
+              tokenImageUrl: res.url,
+            }));
+          }
+        })
+        .then(async () => {
+          console.log(tokenData);
 
-    let uploadFileResp = await uploadFile(authToken!, customImage!, "tokens");
 
-    if (uploadFileResp.statusCode !== 201) {
-      toast({
-        type: "danger",
-        message: uploadFileResp.message,
-        duration: 3000
-      });
-      return;
+          setContractTokenData({
+            name: tokenData.tokenName,
+            symbol: tokenData.symbol,
+            aiImageIpfsUrl: "",
+            aiModelIpfsUrl: "",
+            initialSupply: tokenData.supply
+          })
+
+          const res = await createToken(authToken, tokenData);
+          return res;
+        })
+        .then((res) => {
+          if (res.statusCode === 201) {
+            toast({
+              type: "success",
+              message: "Token Created Successfully!",
+              duration: 3000,
+            });
+            navigate("/create-character", { state: { id: res.message } });
+          } else {
+            toast({
+              type: "danger",
+              message: res.message.toString(),
+              duration: 3000,
+            });
+          }
+        });
     }
-
-    setTokenData((prevState) => ({
-      ...prevState,
-      tokenImageUrl: uploadFileResp.message
-    }));
-
-    let { message, statusCode } = await createToken(authToken!, tokenData);
-    // let {message, statusCode} = {message: 1, statusCode: 201};
-
-    if (statusCode === 201) {
-      
-      toast({
-        type: "success",
-        message: "Token Created Successfully!",
-        duration: 3000
-      });
-      navigate("/create-character", { state: { id: message } });
-
-    } else {
-
-      toast({
-        type: "danger",
-        message: message.toString(),
-        duration: 3000
-      });
-    }
-
     setIsSubmitting(false);
   };
 
@@ -219,6 +268,14 @@ const ListTokenPage = ({
     }));
   };
 
+
+  useEffect(() => {
+    const storedToken = localStorage.getItem("accessToken");
+    if (storedToken) {
+      setAuthToken(storedToken);
+    }
+  }, []);
+
   return (
     <section className="bg-blue-dark bg-pattern pt-24 pb-20">
       <div className="container max-w-[800px] mx-auto px-4">
@@ -245,7 +302,9 @@ const ListTokenPage = ({
                 onToggleAgent={handleToggleAgent}
                 onConfigureAgent={openAgentPopup}
                 streamingPlatform={streamingPlatform}
-                handleStreamingPlatformChange={(platform) => setStreamingPlatform(platform)}
+                handleStreamingPlatformChange={(platform) =>
+                  setStreamingPlatform(platform)
+                }
               />
             )}
           </form>

@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { AIToken } from "../types";
 import { useWriteContract } from "wagmi";
-import { ABI } from "../abi";
+import { ABI } from "../../abi";
 import { parseEther } from "viem";
 
 // TypeScript interfaces

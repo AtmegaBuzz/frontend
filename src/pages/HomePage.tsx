@@ -1,12 +1,8 @@
 import { useNavigate } from "react-router-dom";
-import {
-  FeaturedStreams,
-  HowItWorks,
-  Benefits,
-  TokenStats,
-} from "../components";
-import SEO from "../Seo";
-
+import FeaturedStreams from "../components/FeaturedStreams";
+import HowItWorks from "../components/HowItWorks";
+import Benefits from "../components/Benefits";
+import TokenStats from "../components/TokenStats";
 
 const HomePage = () => {
   const navigate = useNavigate();
@@ -21,22 +17,6 @@ const HomePage = () => {
   };
 
   return (
-    <>
-    <SEO 
-  title="ShillTube – AI-Powered Memecoin Entertainment Ecosystem | Crypto Meets Fun"
-  description="Join ShillTube, the first AI-driven memecoin entertainment platform transforming static tokens into lively AI personalities. Unlock viral meme culture, real-time AI interactions, and decentralized engagement. Redefine crypto entertainment with ShillTube."
-  keywords="AI memecoin, crypto entertainment, AI crypto personality, decentralized meme tokens, Web3 AI, viral crypto platform, blockchain entertainment, crypto culture, interactive memecoin, AI influencers, AI token utility, crypto engagement platform"
-  image="https://www.shilltube.fun/images/icon-256w.png"
-  ogTitle="ShillTube – The Future of Memecoin Entertainment Powered by AI"
-  ogDescription="Experience the evolution of memecoins with AI personalities, community-driven content, and viral entertainment on the blockchain. Engage, trade, and laugh with ShillTube."
-  twitterTitle="ShillTube 🚀 | AI Meets Memecoin for Next-Level Entertainment"
-  twitterDescription="From memes to AI personalities – ShillTube revolutionizes crypto entertainment. Dive into the next-gen memecoin movement!"
-  twitterImage="https://pbs.twimg.com/profile_images/1899640464652881920/h2lyRJ9J_400x400.jpg"
-  hashtags="#ShillTube #MemecoinRevolution #AICrypto #CryptoEntertainment #Web3Meme #BlockchainFun #AIInfluencer #CryptoCommunity #NextGenMemecoin #DeFiMeme #AIPoweredTokens #InteractiveCrypto"
-  canonical="https://www.shilltube.fun"
-  locale="en_US"
-/>
-
     <main>
       {/* Hero Section - Added proper padding for mobile to avoid navbar overlap */}
       <section
@@ -53,7 +33,7 @@ const HomePage = () => {
                 textShadow: "-12px 12px 0 #1f2024",
               }}
             >
-              SHILL
+              SH
             </h1>
             <h1
               className="text-[14vw] lg:text-[12vw] relative z-[2] mt-0 mb-0 text-white font-black cursor-pointer hover:text-[#5879ff]"
@@ -62,7 +42,7 @@ const HomePage = () => {
                 textShadow: "-12px 12px 0 #1f2024",
               }}
             >
-              TU
+              ILL
             </h1>
             <h1
               className="text-[14vw] lg:text-[12vw] relative z-[3] mt-0 mb-0 text-white font-black cursor-pointer hover:text-[#ff55a2] pl-[3px]"
@@ -71,7 +51,7 @@ const HomePage = () => {
                 textShadow: "-9px 10px 0 #1f2024",
               }}
             >
-              BE
+              O
             </h1>
           </div>
 
@@ -86,7 +66,7 @@ const HomePage = () => {
                 alt=""
                 className="absolute left-[5%] top-[15%] w-[15vw] max-w-[70px] rotate-[8deg] z-0"
               />
-          {/*}    <img
+              {/*}    <img
                 src="/images/hero-image02.svg"
                 loading="eager"
                 alt=""
@@ -114,9 +94,8 @@ const HomePage = () => {
               />
 
               {/* Bottom row */}
-             
-              
-            {/*  <img
+
+              {/*  <img
                 src="/images/hero-image09.svg"
                 loading="lazy"
                 alt=""
@@ -124,8 +103,6 @@ const HomePage = () => {
               />*/}
 
               {/* Feature images with larger size */}
-             
-              
             </div>
 
             {/* Mobile main content */}
@@ -148,7 +125,7 @@ const HomePage = () => {
                     textShadow: "-6px 6px 0 #1f2024",
                   }}
                 >
-                  SHILL
+                  SH
                 </h1>
                 <div className="flex -mt-[0.5vw]">
                   <h1
@@ -158,7 +135,7 @@ const HomePage = () => {
                       textShadow: "-6px 6px 0 #1f2024",
                     }}
                   >
-                    TU
+                    ILL
                   </h1>
                   <h1
                     className="text-[22vw] relative z-[3] m-0 text-white font-black cursor-pointer hover:text-[#ff55a2] pl-[3px] leading-[0.8]"
@@ -167,7 +144,7 @@ const HomePage = () => {
                       textShadow: "-6px 6px 0 #1f2024",
                     }}
                   >
-                    BE
+                    O
                   </h1>
                 </div>
               </div>
@@ -201,10 +178,10 @@ const HomePage = () => {
 
           {/* Desktop subtitle and description */}
           <div className="max-w-[800px] mx-auto text-center z-10 relative px-5 hidden md:block">
-            <h2 className="text-white mb-5 drop-shadow-[2px_2px_0_#000]">
+            <h2 className="text-black mb-5 drop-shadow-[2px_2px_0_#ffffff]">
               AI-Powered Memecoin Entertainment Platform
             </h2>
-            <p className="text-white text-lg mb-8 drop-shadow-[1px_1px_0_#000]">
+            <p className="text-black text-lg mb-8 drop-shadow-[1px_1px_0_#000]">
               Transform your static memecoin into a dynamic, engaging AI
               personality that interacts with your community 24/7. Stand out in
               the crowded memecoin market with live entertainment and automated
@@ -227,8 +204,8 @@ const HomePage = () => {
 
           {/* Improved mobile buttons with consistent sizing and spacing */}
           <div className="flex flex-col md:hidden gap-4 z-10 relative w-full max-w-[280px]">
-            <button 
-              onClick={handleListToken} 
+            <button
+              onClick={handleListToken}
               className="mobile-hero-button bg-lightBlue text-black hover:bg-[#ff00a1] hover:text-white"
             >
               LIST YOUR TOKEN
@@ -311,20 +288,19 @@ const HomePage = () => {
           {/* Better positioned mobile background images */}
           <div className="block md:hidden absolute inset-0 overflow-hidden">
             {/* Top row */}
-           
-           {/*  <img
+
+            {/*  <img
               src="/images/hero-image02.svg"
               loading="eager"
               alt=""
               className="absolute left-[50%] top-[12%] w-[15vw] max-w-[70px] -translate-x-1/2 rotate-[-5deg] z-0"
             />*/}
-           {/*  <img
+            {/*  <img
               src="/images/hero-image10.svg"
               loading="eager"
               alt=""
               className="absolute right-[5%] top-[15%] w-[15vw] max-w-[70px] rotate-[-8deg] z-0"
             />*/}
-                    
 
             {/* Bottom row black guy */}
             <img
@@ -333,13 +309,13 @@ const HomePage = () => {
               alt=""
               className="absolute left-[%] bottom-[15%] w-[15vw] max-w-[70px] rotate-[-8deg] z-0"
             />
-           {/* <img
+            {/* <img
               src="/images/hero-image06.svg"
               loading="lazy"
               alt=""
               className="absolute left-[50%] bottom-[10%] w-[15vw] max-w-[70px] -translate-x-1/2 rotate-[5deg] z-0"
             />*/}
-                        {/* Bottom row freen guy */}
+            {/* Bottom row freen guy */}
             <img
               src="/images/hero-image09.svg"
               loading="lazy"
@@ -349,7 +325,7 @@ const HomePage = () => {
 
             {/* Feature images with larger size */}
             {/* purple robot on top with chapri hair*/}
-            <img 
+            <img
               src="/images/hero-image11.svg"
               loading="lazy"
               alt=""
@@ -378,7 +354,6 @@ const HomePage = () => {
       {/* Token Statistics Section */}
       <TokenStats />
     </main>
-    </>
   );
 };
 
