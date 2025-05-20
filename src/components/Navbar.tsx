@@ -3,12 +3,33 @@ import { Link } from "react-router-dom";
 import { useToast } from "../hooks/toast";
 import { usePrivy } from "@privy-io/react-auth";
 import { login as loginAPI } from "../apis/auth";
+import WaitlistPopup from "./Waitlist";
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const { toast } = useToast();
   const [accessToken, setAccessToken] = useState<string>();
   const { authenticated, login, logout, getAccessToken } = usePrivy();
+  const [isWaitlistOpen, setIsWaitlistOpen] = useState(false);
+
+  const openWaitlist = () => {
+    setIsWaitlistOpen(true);
+  };
+
+  const closeWaitlist = () => {
+    setIsWaitlistOpen(false);
+  };
+
+  const handleWaitlistSubmit = async (email: string) => {
+    // Here you would typically send the email to your backend API
+    console.log("Submitting email to waitlist:", email);
+
+    // Simulate API call with a delay
+    await new Promise(resolve => setTimeout(resolve, 1000));
+
+    // You would handle any error logic in your actual implementation
+    // If there's an error, throw it and the component will show the error toast
+  };
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
@@ -46,6 +67,11 @@ const Navbar = () => {
 
   return (
     <div className="fixed left-0 top-0 right-0 bottom-auto bg-transparent z-[9999]">
+      <WaitlistPopup
+        isOpen={isWaitlistOpen}
+        onClose={closeWaitlist}
+        onSubmit={handleWaitlistSubmit}
+      />
       <div className="w-full px-4 py-2 md:pt-6">
         {" "}
         {/* Added md:pt-6 for desktop padding-top */}
@@ -134,12 +160,12 @@ const Navbar = () => {
                     >
                       Dashboard
                     </Link>
-                    <Link
-                      to="/create-character"
+                    <button
+                      onClick={openWaitlist}
                       className="px-4 py-2 text-white text-base hover:text-yellow whitespace-nowrap flex-shrink-0"
                     >
-                      Create Character
-                    </Link>
+                      Join Waitlist
+                    </button>
                   </>
                 )}
 
