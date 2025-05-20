@@ -93,9 +93,9 @@ const Navbar = () => {
         </div>
         {/* Desktop View */}
         <div className="hidden md:flex justify-center w-full">
-          <div className="flex items-center justify-center w-full max-w-[940px]">
+          <div className="flex items-center justify-center w-full max-w-[1200px]">
             <div className="flex items-center bg-black text-white h-14 rounded-lg mx-auto">
-              <Link to="/" className="flex items-center px-4">
+              <Link to="/" className="flex items-center px-4 flex-shrink-0">
                 <img
                   src="/images/icon-256w.png"
                   loading="lazy"
@@ -104,33 +104,39 @@ const Navbar = () => {
                   alt="Shillo Logo"
                   className="mr-3"
                 />
-                <div className="text-white text-base font-medium">ShillTube</div>
+                <div className="text-white text-base font-medium whitespace-nowrap">ShillTube</div>
               </Link>
-              <div className="h-14 w-[1px] bg-white/20"></div>
-              <nav className="flex items-center px-3">
+              <div className="h-14 w-[1px] bg-white/20 flex-shrink-0"></div>
+              <nav className="flex items-center px-3 flex-nowrap overflow-x-auto">
                 <Link
                   to="/explore"
-                  className="px-4 py-2 text-white text-base hover:text-yellow"
+                  className="px-4 py-2 text-white text-base hover:text-yellow whitespace-nowrap flex-shrink-0"
                 >
                   Explore
+                </Link>
+                <Link
+                  to="/litepaper"
+                  className="px-4 py-2 text-white text-base hover:text-yellow whitespace-nowrap flex-shrink-0"
+                >
+                  Litepaper
                 </Link>
                 {authenticated && (
                   <>
                     <Link
                       to="/list-token"
-                      className="px-4 py-2 text-white text-base hover:text-yellow"
+                      className="px-4 py-2 text-white text-base hover:text-yellow whitespace-nowrap flex-shrink-0"
                     >
                       List Token
                     </Link>
                     <Link
                       to="/dashboard"
-                      className="px-4 py-2 text-white text-base hover:text-yellow"
+                      className="px-4 py-2 text-white text-base hover:text-yellow whitespace-nowrap flex-shrink-0"
                     >
                       Dashboard
                     </Link>
                     <Link
                       to="/create-character"
-                      className="px-4 py-2 text-white text-base hover:text-yellow"
+                      className="px-4 py-2 text-white text-base hover:text-yellow whitespace-nowrap flex-shrink-0"
                     >
                       Create Character
                     </Link>
@@ -141,7 +147,7 @@ const Navbar = () => {
                   onClick={() => {
                     authenticated ? logout() : handleConnect();
                   }}
-                  className="rounded-lg bg-[#ff3979] hover:bg-[#5100ff] transition-colors duration-200 py-2 px-4 text-white border-none cursor-pointer ml-3 text-base"
+                  className="rounded-lg bg-[#ff3979] hover:bg-[#5100ff] transition-colors duration-200 py-2 px-4 text-white border-none cursor-pointer ml-3 text-base whitespace-nowrap flex-shrink-0"
                 >
                   {authenticated ? "Disconnect" : "Connect"}
                 </button>

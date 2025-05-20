@@ -14,6 +14,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { WagmiProvider } from "@privy-io/wagmi";
 import { wagmiConfig } from "./utils/WagmiConfig";
 import Footer from "./components/Footer";
+import LitePaper from "./pages/Litepaper";
 
 export {};
 
@@ -60,6 +61,10 @@ function App() {
                     <Route
                       path="/stream/:tokenId"
                       element={<LiveStreamPage />}
+                    />
+                    <Route
+                      path="/litepaper"
+                      element={<LitePaper />}
                     />
                     <Route
                       path="/create-character"
